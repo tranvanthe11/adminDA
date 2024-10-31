@@ -3,15 +3,24 @@ import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css"
 import Dashboard from './pages/Dashboard';
 import Header from './components/Header';
+import Sidebar from './components/Sidebar';
 
 function App() {
   return (
     <BrowserRouter>
     <Header />
-      <Routes>
-        <Route path="/" exact={true} element={<Dashboard />} />
-        <Route path="/dashboard" exact={true} element={<Dashboard />} />
-      </Routes>
+    <div className='main d-flex'>
+      <div className='sidebarWrapper'>
+        <Sidebar />
+      </div>
+
+      <div className='content'>
+        <Routes>
+          <Route path="/" exact={true} element={<Dashboard />} />
+          <Route path="/dashboard" exact={true} element={<Dashboard />} />
+        </Routes>
+      </div>
+    </div>
     </BrowserRouter>
   );
 }

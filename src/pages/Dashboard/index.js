@@ -3,7 +3,7 @@
 const Dashboard = () => {
     return(
         <>
-            
+            <h4>Dashoard</h4>
         </>
     )
 }
