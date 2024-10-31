@@ -4,4 +4,40 @@
 
 body{font-family: "Open Sans", sans-serif; background: #ebe9e9 !important;}
 
+::-webkit-scrollbar{width: 5px !important; height: 5px !important;}
+::-webkit-scrollbar-thumb{background: #ccc !important;}
+::-webkit-scrollbar-track{background: transparent !important;}
+
+.btn-blue{background: #0858f7 !important; font-size: 14px !important; font-weight: 500; color: #fff !important;
+text-transform: capitalize !important; border-radius: 5px !important;}
+
 header{width: 100%; height: 80px; background: #fff;}
+header .logo{text-decoration: none !important;}
+header .logo img{width: 80px;}
+header .logo span{color: #2e2c2c; font-weight: 800; font-size: 24px;}
+
+header button.rounded-circle{min-width: 40px !important; width: 40px !important; height: 40px !important;
+background: #f0f5ff !important; color: #2e2c2c;}
+header button.rounded-circle svg{color: #2e2c2c; font-size: 18px !important;}
+header button.rounded-circle:hover svg{color: #0858f7 !important;}
+
+.searchBox{width: 400px; height: 40px; background: #f0f5ff; border-radius: 6px; padding: 3px 15px;}
+.searchBox input{background: transparent !important ; border: 0px; outline: none; padding-left: 5px;
+font-size: 14px; color: #2e2c2c;}
+.searchBox input::-webkit-input-placeholder{color: rgba(0,0,0,0.6);}
+
+.searchBox svg{font-size: 18px; color: #2e2c2c;}
+
+.myAcount{text-align: left !important; color: #000 !important; text-transform: none !important;}
+.userImg{display: flex; align-items: center; justify-content: center; overflow: hidden;
+width: 40px; height: 40px; border: 1px solid #0858f7; padding: 1px; border-radius: 100%;}
+.userImg .rounded-circle{display: flex; align-items: center; justify-content: center;
+overflow: hidden; width: 100%; height: 100%; cursor: pointer; position: relative;}
+.userImg .rounded-circle img{object-fit: cover; width: 100%; height: 100%;}
+
+.myAcount .userInfo{padding-left: 10px;}
+.myAcount .userInfo h4{font-size: 15px; font-weight: 600; margin-bottom: 0px;}
+.myAcount .userInfo p{margin-top: 0px; font-size: 14px; color: #000; opacity: 0.8;}
+
+#account-menu li{font-size: 14px !important; }
+#account-menu li svg{font-size: 20px !important;}
