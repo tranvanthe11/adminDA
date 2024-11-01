@@ -11,9 +11,9 @@ body{font-family: "Open Sans", sans-serif !important; background: #ebe9e9 !impor
 .btn-blue{background: #0858f7 !important; font-size: 14px !important; font-weight: 500; color: #fff !important;
 text-transform: capitalize !important; border-radius: 5px !important;}
 
-header{width: 100%; height: 80px; background: #fff; position: fixed; top: 0px; right: 0px; z-index: 100;}
+header{width: 100%; height: 80px; background: #fcaf17; position: fixed; top: 0px; right: 0px; z-index: 100;}
 header .logo{text-decoration: none !important;}
-header .logo img{width: 80px;}
+header .logo img{width: 80px; border-radius: 100%;}
 header .logo span{color: #2e2c2c; font-weight: 800; font-size: 24px;}
 
 header button.rounded-circle{min-width: 40px !important; width: 40px !important; height: 40px !important;
@@ -78,7 +78,7 @@ display: block; padding: 6px 0px; font-size: 14px; font-weight: 500;}
 .main .sidebarWrapper .sidebar ul .submenuWrapper.colapsed{height: 0px;}
 .main .sidebarWrapper .sidebar ul .submenuWrapper.colapsed .submenu{opacity: 0;}
 
-.main .sidebarWrapper .sidebar ul .submenuWrapper.colapse{height: auto;}
+.main .sidebarWrapper .sidebar ul .submenuWrapper.colapse{height: auto; padding: 10px 0px;}
 .main .sidebarWrapper .sidebar ul .submenuWrapper.colapse .submenu{opacity: 1;}
 
 .logoutWrapper{padding: 0px 25px;}
@@ -92,3 +92,51 @@ border-radius: 100%; position: absolute; top: -30px; right: -20px; opacity: 0.5;
 
 .logoutWrapper .logoutBox button{font-size: 14px !important; font-weight: 600 !important;}
 .logoutWrapper .logoutBox button svg{margin-right: 5px; font-size: 18px !important;}
+
+.main .content{width: 80%; flex: 0 0 80%;}
+
+.right-content{padding: 90px 30px;}
+
+.dashboardBoxWrapper{gap: 20px; width: 100%; flex-wrap: wrap;}
+.dashboardBoxWrapper .dashboardBox{width: 47%; height: 170px; border-radius: 10px; overflow: hidden;
+padding: 20px;}
+
+.dashboardBoxWrapper .dashboardBox .col1 h4{font-size: 20px; font-weight: 600;}
+.dashboardBoxWrapper .dashboardBox .col1 span{font-size: 40px; font-weight: bold; line-height: 45px;}
+
+.dashboardBoxWrapper .dashboardBox .icon svg{font-size: 36px; opacity: 0.7; color: #fff;}
+
+.dashboardBoxWrapperRow .box{width: 100%; height: 100%;}
+
+.graphBox{background-image: linear-gradient(#316ad4, #5080e1); border-radius: 10px; padding: 25px;}
+
+.card{margin: 20px 0px; border-radius: 10px; }
+.card .hd{font-size: 18px; font-weight: bold;}
+
+.cardFilters .col-md-3 h4{font-size: 16px; font-weight: 600; text-transform: capitalize;}
+
+.table .thead-dark th{background-color: #fcaf17 !important; border-color: rgba(255,255,255,0.5) !important;
+font-size: 14px !important;}
+
+.table tbody td{font-size: 14px; font-weight: 500;}
+
+.table tbody .actions button{min-width: 30px !important; width: 30px !important; height: 30px !important;
+margin: 0px 2px !important;}
+.table tbody .actions button svg{font-size: 30px !important;}
+
+table.v-align td{vertical-align: middle !important;}
+table td .imgWrapper{width: 20%; flex: 0 0 20%;}
+table td .imgWrapper .img{}
+table td .info{width: 80% !important; flex: 0 0 80% !important;}
+table td .info h6{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; 
+font-weight: 600; margin: 0px;}
+
+table.v-align td .productBox{width: 270px;}
+table.v-align td .productBox .info{width: 100%;}
+
+
+.table td .old, .table td .new{display: block; width: 100%;}
+
+.tableFooter{padding-bottom: 20px;}
+.tableFooter .pagination{margin-left: auto;}
+.css-1bug3cd-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected{background-color: #fcaf17 !important;}
