@@ -4,10 +4,13 @@ import { FaAngleRight } from "react-icons/fa";
 import { FaProductHunt } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { MdLogout } from "react-icons/md";
+import { MyContext } from "../../App";
 
 const Sidebar = () => {
+
+    const context = useContext(MyContext);
 
     const [activeTab, setActiveTab] = useState(0);
     const [isToggleSubmenu, setIsToggleSubmenu] = useState(false);

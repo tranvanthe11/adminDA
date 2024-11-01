@@ -2,7 +2,7 @@
 
 *{margin: 0px; padding: 0px;}
 
-body{font-family: "Open Sans", sans-serif !important; background: #ebe9e9 !important;}
+body{font-family: "Open Sans", sans-serif !important; background: #ebe9e9 !important; overflow-x: hidden;}
 
 ::-webkit-scrollbar{width: 5px !important; height: 5px !important;}
 ::-webkit-scrollbar-thumb{background: #ccc !important;}
@@ -43,8 +43,11 @@ overflow: hidden; width: 100%; height: 100%; cursor: pointer; position: relative
 #account-menu li svg{font-size: 20px !important;}
 
 .main .sidebarWrapper{width: 20%; flex: 0 0 20%;}
+.main .sidebarWrapper.toggle{width: 0%; flex: 0 0 0%;}
 .main .sidebarWrapper .sidebar{width: 20%; height: 100vh;max-height:calc(100% - 80px) ; position: fixed; top: 80px;
 left: 0px; background: #fff !important; overflow-y: scroll;overflow-x: hidden; padding-bottom: 40px;}
+
+.main .sidebarWrapper.toggle .sidebar{left: -100%;}
 
 /* .main .sidebarWrapper .sidebar::-webkit-scrollbar-thumb{background: transparent !important;}
 .main .sidebarWrapperhover .sidebar::-webkit-scrollbar{background: #08578f !important;} */
@@ -94,8 +97,9 @@ border-radius: 100%; position: absolute; top: -30px; right: -20px; opacity: 0.5;
 .logoutWrapper .logoutBox button svg{margin-right: 5px; font-size: 18px !important;}
 
 .main .content{width: 80%; flex: 0 0 80%;}
+.main .content.toggle{width: 100%; flex: 0 0 100%;}
 
-.right-content{padding: 90px 30px;}
+.right-content{padding: 90px 30px; padding-bottom: 10px;}
 
 .dashboardBoxWrapper{gap: 20px; width: 100%; flex-wrap: wrap;}
 .dashboardBoxWrapper .dashboardBox{width: 47%; height: 170px; border-radius: 10px; overflow: hidden;
@@ -115,6 +119,8 @@ padding: 20px;}
 
 .cardFilters .col-md-3 h4{font-size: 16px; font-weight: 600; text-transform: capitalize;}
 
+.table-responsive::-webkit-scrollbar-thumb{background: #ccc !important;}
+
 .table .thead-dark th{background-color: #fcaf17 !important; border-color: rgba(255,255,255,0.5) !important;
 font-size: 14px !important;}
 
@@ -126,7 +132,6 @@ margin: 0px 2px !important;}
 
 table.v-align td{vertical-align: middle !important;}
 table td .imgWrapper{width: 20%; flex: 0 0 20%;}
-table td .imgWrapper .img{}
 table td .info{width: 80% !important; flex: 0 0 80% !important;}
 table td .info h6{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; 
 font-weight: 600; margin: 0px;}
@@ -139,4 +144,6 @@ table.v-align td .productBox .info{width: 100%;}
 
 .tableFooter{padding-bottom: 20px;}
 .tableFooter .pagination{margin-left: auto;}
+.tableFooter p{font-size: 14px; font-weight: 500; margin-bottom: 0px;}
+
 .css-1bug3cd-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected{background-color: #fcaf17 !important;}

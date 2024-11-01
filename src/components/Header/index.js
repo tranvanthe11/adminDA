@@ -7,7 +7,7 @@ import SearchBox from "../SearchBox";
 import { MdLightMode } from "react-icons/md";
 import { MdNightlightRound } from "react-icons/md";
 import { FaRegBell } from "react-icons/fa";
-import React from 'react';
+import React, { useContext } from 'react';
 import { useState } from "react";
 import { IoShieldHalfSharp } from "react-icons/io5";
 
@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Logout from '@mui/icons-material/Logout';
+import { MyContext } from "../../App";
 
 
 
@@ -23,6 +24,9 @@ const Header = () => {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+
+    const context = useContext(MyContext);
+
     const handleOpenMyAccDrop = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -42,7 +46,15 @@ const Header = () => {
                         </div>
 
                         <div className="col-sm-3 d-flex align-items-center part2 pl-4">
-                            <Button className="rounded-circle mr-3"><MdOutlineMenu /></Button>
+                            <Button className="rounded-circle mr-3"
+                            onClick={()=>context.setIsToggleSidebar(!context.isToggleSidebar)}>
+                                {
+                                    context.isToggleSidebar===false ?
+                                    <MdMenuOpen /> 
+                                    :
+                                    <MdOutlineMenu />
+                                }
+                            </Button>
                             <SearchBox />
                         </div>
 
