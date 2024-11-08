@@ -29,7 +29,7 @@ const Sidebar = () => {
                             <Button className={`w-100 ${activeTab===0 ? 'active' : ''}`}
                             onClick={()=>isOpenSubmenu(0)}>
                                 <span className='icon'><MdDashboard /></span>
-                                Dashboard
+                                Bảng điều khiển
                                 <span className='arrow'><FaAngleRight /></span>
                             </Button>
                         </Link>
@@ -38,16 +38,19 @@ const Sidebar = () => {
                         <Button className={`w-100 ${activeTab===1 ? 'active' : ''}`}
                          onClick={()=>isOpenSubmenu(1)} >
                             <span className='icon'><FaProductHunt /></span>
-                            Products
+                            Sản phẩm
                             <span className='arrow'><FaAngleRight /></span>
                         </Button>
                         <div className={`submenuWrapper ${activeTab===1 && isToggleSubmenu===true ? 'colapse' : 'colapsed'}`}>
                             <ul className='submenu'>
                                 <li>
-                                    <Link to="#">Product List</Link>
+                                    <Link to="/products">Danh sách sản phẩm</Link>
                                 </li>
                                 <li>
-                                    <Link to="#">Product Upload</Link>
+                                    <Link to="/product/details">Xem sản phẩm</Link>
+                                </li>
+                                <li>
+                                    <Link to="/product/upload">Thêm sản phẩm</Link>
                                 </li>
                             </ul>
                         </div>
@@ -56,16 +59,13 @@ const Sidebar = () => {
                         <Button className={`w-100 ${activeTab===2 && isToggleSubmenu===true ? 'active' : ''}`}
                         onClick={()=>isOpenSubmenu(2)}>
                             <span className='icon'><FaShoppingCart /></span>
-                            Order
+                            Đơn hàng
                             <span className='arrow'><FaAngleRight /></span>
                         </Button>
                         <div className={`submenuWrapper ${activeTab===2 && isToggleSubmenu===true ? 'colapse' : 'colapsed'}`}>
                             <ul className='submenu'>
                                 <li>
-                                    <Link to="#">Order List</Link>
-                                </li>
-                                <li>
-                                    <Link to="#">Product Upload</Link>
+                                    <Link to="#">Danh sách đơn hàng</Link>
                                 </li>
                             </ul>
                         </div>
@@ -76,7 +76,7 @@ const Sidebar = () => {
 
                 <div className='logoutWrapper'>
                     <div className='logoutBox'>
-                        <Button variant="contained"><MdLogout />Logout</Button>
+                        <Button variant="contained"><MdLogout />Đăng xuất</Button>
                     </div>
                 </div>
             </div>

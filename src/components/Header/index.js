@@ -17,6 +17,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Logout from '@mui/icons-material/Logout';
 import { MyContext } from "../../App";
+import UserAvatar from "../userAvatar";
 
 
 
@@ -24,6 +25,7 @@ const Header = () => {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+
 
     const context = useContext(MyContext);
 
@@ -45,7 +47,7 @@ const Header = () => {
                             </Link>
                         </div>
 
-                        <div className="col-sm-3 d-flex align-items-center part2 pl-4">
+                        <div className="col-sm-3 d-flex align-items-center part2">
                             <Button className="rounded-circle mr-3"
                             onClick={()=>context.setIsToggleSidebar(!context.isToggleSidebar)}>
                                 {
@@ -62,52 +64,55 @@ const Header = () => {
                             <Button className="rounded-circle mr-3"><MdLightMode /></Button>
                             <Button className="rounded-circle mr-3"><FaRegBell /></Button>
 
-                            <div className="myAccWrapper">
-                                <Button className="myAcount d-flex align-items-center" onClick={handleOpenMyAccDrop}>
-                                    <div className="userImg">
-                                        <span className="rounded-circle">
-                                            <img src="https://scontent.fhan2-3.fna.fbcdn.net/v/t39.30808-6/383007770_1343105983301466_455739966004467731_n.jpg?stp=dst-jpg_p526x296&_nc_cat=101&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=C2vtNprX_LwQ7kNvgG0VEJU&_nc_zt=23&_nc_ht=scontent.fhan2-3.fna&_nc_gid=AwTYlgz-2KoHZDO1yNNoht6&oh=00_AYCge1xBY3kLg3Y3RYkSgNGhGJQLa0C-JDjN4xeJSG_m5w&oe=6728EEB6" />
-                                            
-                                        </span>
-                                    </div>
+                            {
+                                context.isLogin!==true ? 
+                                <Link to={'/login'}>
+                                    <Button className="btn-blue btn-lg btn-round">Đăng nhập</Button>
+                                </Link> :
+                                <div className="myAccWrapper">
+                                    <Button className="myAcount d-flex align-items-center" onClick={handleOpenMyAccDrop}>
+                                        <UserAvatar img={"https://scontent.fhan2-3.fna.fbcdn.net/v/t39.30808-6/383007770_1343105983301466_455739966004467731_n.jpg?stp=dst-jpg_p526x296&_nc_cat=101&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=C2vtNprX_LwQ7kNvgG0VEJU&_nc_zt=23&_nc_ht=scontent.fhan2-3.fna&_nc_gid=AwTYlgz-2KoHZDO1yNNoht6&oh=00_AYCge1xBY3kLg3Y3RYkSgNGhGJQLa0C-JDjN4xeJSG_m5w&oe=6728EEB6"}/>
 
-                                    <div className="userInfo">
-                                        <h4>Trần Văn Thế</h4>
-                                        <p className="mb-0">tranvanthe@gmail.com</p>
-                                    </div>
-                                </Button>
+                                        <div className="userInfo">
+                                            <h4>Trần Văn Thế</h4>
+                                            <p className="mb-0">tranvanthe@gmail.com</p>
+                                        </div>
+                                    </Button>
 
-                                <Menu
-                                    anchorEl={anchorEl}
-                                    id="account-menu"
-                                    open={open}
-                                    onClose={handleCloseMyAccDrop}
-                                    onClick={handleCloseMyAccDrop}
-                                    slotProps={{
-                                    }}
-                                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                                >
-                                    <MenuItem onClick={handleCloseMyAccDrop}>
-                                        <ListItemIcon>
-                                            <PersonAdd fontSize="small" />
-                                        </ListItemIcon>
-                                        My Account
-                                    </MenuItem>
-                                    <MenuItem onClick={handleCloseMyAccDrop}>
-                                        <ListItemIcon>
-                                            <IoShieldHalfSharp />
-                                        </ListItemIcon>
-                                        Reset Password
-                                    </MenuItem>
-                                    <MenuItem onClick={handleCloseMyAccDrop}>
-                                        <ListItemIcon>
-                                            <Logout fontSize="small" />
-                                        </ListItemIcon>
-                                        Logout
-                                    </MenuItem>
-                                </Menu>
-                            </div>
+                                    <Menu
+                                        anchorEl={anchorEl}
+                                        id="account-menu"
+                                        open={open}
+                                        onClose={handleCloseMyAccDrop}
+                                        onClick={handleCloseMyAccDrop}
+                                        slotProps={{
+                                        }}
+                                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                                    >
+                                        <MenuItem onClick={handleCloseMyAccDrop}>
+                                            <ListItemIcon>
+                                                <PersonAdd fontSize="small" />
+                                            </ListItemIcon>
+                                            My Account
+                                        </MenuItem>
+                                        <MenuItem onClick={handleCloseMyAccDrop}>
+                                            <ListItemIcon>
+                                                <IoShieldHalfSharp />
+                                            </ListItemIcon>
+                                            Reset Password
+                                        </MenuItem>
+                                        <MenuItem onClick={handleCloseMyAccDrop}>
+                                            <ListItemIcon>
+                                                <Logout fontSize="small" />
+                                            </ListItemIcon>
+                                            Logout
+                                        </MenuItem>
+                                    </Menu>
+                                </div>
+                            }
+
+
                         </div>
                     </div>
                 </div>
