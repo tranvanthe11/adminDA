@@ -16,10 +16,11 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { IoCloseSharp } from "react-icons/io5";
 import { FaRegImages } from "react-icons/fa";
-import { fetchDataFromApi, postData } from '../../utils/api';
+import { editData, fetchDataFromApi, postData } from '../../utils/api';
 import { MyContext } from '../../App';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     const backgroundColor =
@@ -41,7 +42,7 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     };
   });
 
-const ProductUpload = () => {
+const ProductEdit = () => {
 
     const history = useNavigate();
 
@@ -54,11 +55,12 @@ const ProductUpload = () => {
     const [productImagesArr, setproductImagesArr] = useState([]);
     const [isPromotionValue, setIsPromotionValue] = useState('');
     const [catData, setCatData] = useState([]);
+    const [product, setProducts] = useState([]);
     const [imgFiles, setImgFiles] = useState();
     const [previews, setPreviews] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [count, setCount] = useState(0);
-    const [isSelectdFiles,setIsSelectdFiles] = useState(false);
+    const [isSelectdImages,setIsSelectdImages] = useState(false);
 
     const [ratingValue, setRatingValue] = useState(1);
 
@@ -81,11 +83,38 @@ const ProductUpload = () => {
 
     const formdata = new FormData();
 
+    let {id} = useParams();
+
 
     useEffect(()=>{
         window.scrollTo(0,0);
 
+        context.setProgress(30)
+
         setCatData(context.catData);
+
+        fetchDataFromApi(`/api/products/${id}`).then((res)=>{
+            setProducts(res)
+            setFormFields({
+                name:res.name,
+                description:res.description,
+                // brand:res.brand,
+                price:res.price,
+                discount:res.discount,
+                category:res.category,
+                brand:res.brand,
+                countInStock:res.countInStock,
+                rating:res.rating,
+                isPromotion:res.isPromotion,
+                dateCreated:res.dateCreated,
+            });
+            setRatingValue(res.rating);
+            setCategoryVal(res.category.id);
+            setIsPromotionValue(res.isPromotion);
+            setBrandVal(res.brand.id);
+            setPreviews(res.images);
+            context.setProgress(100);
+        })
     }, []);
 
     useEffect(()=>{
@@ -129,7 +158,7 @@ const ProductUpload = () => {
     const handleChangeSubCategory = (event) => {
         setSubCatVal(event.target.value);
     };
-
+    
     const handleChangeProductSizes = (event) => {
         const {
             target: {value},
@@ -166,33 +195,37 @@ const ProductUpload = () => {
             for(var i=0; i<files.length; i++){
                 if(files[i] && (files[i].type === 'image/jpeg' || files[i].type === 'image/jpg' 
                     || files[i].type === 'image/png' || files[i].type === 'image/webp')) {
-                    setImgFiles(files)
+                    setImgFiles(e.target.files)
 
                     const file = files[i];
                     imgArr.push(file);
                     formdata.append(`images`, file)
-                    }else{
+
+                } else{
+                    context.setAlertBox({
+                        open: true,
+                        error: true,
+                        msg: "vui long them anh"
+                    });
+                }
+            }
+                    setIsSelectdImages(true);
+                    setFiles(imgArr);
+
+                    postData(apiEndPoint, formdata ).then((res)=>{
                         context.setAlertBox({
                             open: true,
-                            error: true,
-                            msg: "vui long them anh"
+                            error: false,
+                            msg: "Them anh thanh cong"
                         });
-                    }
-
-
-                    
-                }
-                setIsSelectdFiles(true);
-                setFiles(imgArr);
-                postData(apiEndPoint, formdata).then((res)=>{
-                })
+                    })
 
         } catch(error){
             console.log(error)
         }
     }
     
-    const addProduct = (e) => {
+    const editProduct = (e) => {
         e.preventDefault();
         
         formdata.append('name', formFields.name);
@@ -230,18 +263,18 @@ const ProductUpload = () => {
         //     })
         //     return false;
         // }
-        if(formFields.category===""){
+        if(formFields.brand===""){
             context.setAlertBox({
                 open: true,
-                msg: "Vui lòng thêm category",
+                msg: "Vui lòng thêm brand",
                 error: true
             })
             return false;
         }
-        if(formFields.brand===""){
+        if(formFields.category===""){
             context.setAlertBox({
                 open: true,
-                msg: "Vui lòng chọn brand",
+                msg: "Vui lòng thêm category",
                 error: true
             })
             return false;
@@ -291,10 +324,10 @@ const ProductUpload = () => {
 
         
 
-        postData('/api/products/create', formFields).then((res)=>{
+        editData(`/api/products/${id}`, formFields).then((res)=>{
             context.setAlertBox({
                 open: true,
-                msg: "Thêm sản phẩm thành công",
+                msg: "Thay doi san pham thanh cong",
                 error: false
             })
             setIsLoading(false);
@@ -302,6 +335,8 @@ const ProductUpload = () => {
             history('/products')
         })
     }
+
+    console.log(context.catData.categoryList)
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
     const MenuProps = {
@@ -317,7 +352,7 @@ const ProductUpload = () => {
         <>  
             <div className="right-content w-100">
                 <div className="card shadow border-0 w-100 flex-row p-4">
-                    <h5 className="mb-0">Thêm sản phẩm</h5>
+                    <h5 className="mb-0">Chỉnh sửa sản phẩm</h5>
                     <Breadcrumbs aria-label="breadcrumb" className='ml-auto breadcrumbs_'>
                         <StyledBreadcrumb
                         component="a"
@@ -332,13 +367,13 @@ const ProductUpload = () => {
                         deleteIcon={<ExpandMoreIcon />}
                         />
                         <StyledBreadcrumb 
-                        label="Thêm sản hẩm"
+                        label="Chỉnh sửa sản phẩm"
                         deleteIcon={<ExpandMoreIcon />}
                         />
                     </Breadcrumbs>
                 </div>
 
-                <form className='form' onSubmit={addProduct}>
+                <form className='form' onSubmit={editProduct}>
                     <div className='row'>
                         <div className='col-md-12'>
                             <div className='card p-4 mt-0'>
@@ -381,7 +416,7 @@ const ProductUpload = () => {
 
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>Thương hiệu</h6>
+                                            <h6>Brand</h6>
                                             <Select
                                             value={brandVal}
                                             onChange={handleChangeBrand}
@@ -402,32 +437,6 @@ const ProductUpload = () => {
                                         </Select>
                                         </div>
                                     </div>
-
-                                    {/* <div className='col'>
-                                        <div className='form-group'>
-                                            <h6>Sub category</h6>
-                                            <Select
-                                                value={subCatVal}
-                                                onChange={handleChangeSubCategory}
-                                                displayEmpty
-                                                inputProps={{ 'aria-label': 'Without label' }}
-                                                className='w-100'
-                                                >
-                                                <MenuItem value="">
-                                                    <em value={null}>None</em>
-                                                </MenuItem>
-                                                <MenuItem className='text-capitalize' value='ten'>Ten</MenuItem>
-                                                <MenuItem className='text-capitalize' value='for'>For</MenuItem>
-                                            </Select>
-                                        </div>
-                                    </div> */}
-
-                                    {/* <div className='col'>
-                                        <div className='form-group'>
-                                            <h6>brand</h6>
-                                            <input type='text' name='brand' value={formFields.brand} onChange={inputChange} />
-                                        </div>
-                                    </div> */}
 
                                 </div>
 
@@ -541,19 +550,6 @@ const ProductUpload = () => {
 
                                 </div>
 
-                                {/* <div className='row'>
-                                    <div className='col'>
-                                        <div className='form-group'>
-                                            <h6>Product images</h6>
-                                            <div className='position-relative inputBtn'>
-                                                <input type='text' ref={productImages} 
-                                                name='images' onChange={inputChange}/>
-                                                <Button className='btn-blue'
-                                                onClick={addProductImages}>Add</Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> */}
 
                             </div>
                         </div>
@@ -565,11 +561,17 @@ const ProductUpload = () => {
                                     <h5 className='mb-4'>Media and published</h5>
 
                                     <div className='imgUploadBox d-flex align-items-center'>
-                                        {
+                                    {
                                             previews?.length !== 0 && previews?.map((img, index)=>{
                                                 return(
                                                     <div className='uploadBox' key={index}>
-                                                        <img src={img} className='w-100' />
+                                                        {
+                                                            isSelectdImages === true ?
+                                                            <img src={`${img}`} className='w-100' />
+                                                            :
+                                                            <img src={`${context.baseUrl}/upload/${img}`} className='w-100' />
+
+                                                        }
                                                     </div>
                                                 )
                                             })
@@ -611,4 +613,4 @@ const ProductUpload = () => {
     )
 }
 
-export default ProductUpload;
+export default ProductEdit;

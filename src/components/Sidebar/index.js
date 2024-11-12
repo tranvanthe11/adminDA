@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { MdLogout } from "react-icons/md";
 import { MyContext } from "../../App";
+import { BiSolidCategory } from "react-icons/bi";
 
 const Sidebar = () => {
 
@@ -58,6 +59,24 @@ const Sidebar = () => {
                     <li>
                         <Button className={`w-100 ${activeTab===2 && isToggleSubmenu===true ? 'active' : ''}`}
                         onClick={()=>isOpenSubmenu(2)}>
+                            <span className='icon'><BiSolidCategory /></span>
+                            Loại sản phẩm
+                            <span className='arrow'><FaAngleRight /></span>
+                        </Button>
+                        <div className={`submenuWrapper ${activeTab===2 && isToggleSubmenu===true ? 'colapse' : 'colapsed'}`}>
+                            <ul className='submenu'>
+                                <li>
+                                    <Link to="/category">Danh sách loại sản phẩm</Link>
+                                    <Link to="/category/add">Thêm loại sản phẩm</Link>
+                                    <Link to="/brand">Danh sách thương hiệu</Link>
+                                    <Link to="/brand/add">Thêm thương hiệu</Link>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    {/* <li>
+                        <Button className={`w-100 ${activeTab===2 && isToggleSubmenu===true ? 'active' : ''}`}
+                        onClick={()=>isOpenSubmenu(2)}>
                             <span className='icon'><FaShoppingCart /></span>
                             Đơn hàng
                             <span className='arrow'><FaAngleRight /></span>
@@ -69,7 +88,7 @@ const Sidebar = () => {
                                 </li>
                             </ul>
                         </div>
-                    </li>
+                    </li> */}
                 </ul>
 
                 <br />

@@ -5,20 +5,62 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import { createContext, useEffect, useState } from 'react';
+import { createContext,  useEffect,  useRef, useState } from 'react';
 import SignUp from './pages/SignUp';
 import Products from './pages/Products';
+import Category from './pages/Category/index';
 import ProductDetails from './pages/ProductDetails';
 import ProductUpload from './pages/ProductUpload';
+import CategoryAdd from './pages/CategoryAdd';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import LoadingBar from 'react-top-loading-bar'
+import CategoryEdit from './pages/CategoryEdit';
+import ProductEdit from './pages/ProductEdit';
+import { fetchDataFromApi } from './utils/api';
+import AddBrand from './pages/Category/addBrand';
+import Brand from './pages/Category/brandList';
+import EditBrand from './pages/Category/editBrand';
 
 const MyContext = createContext();
 
 function App() {
 
+  const [progress, setProgress] = useState(0)
+  const [catData, setCatData] = useState([]);
+  const [brandData, setBrandData] = useState([]);
+
   const [isToggleSidebar, setIsToggleSidebar] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [isHideSidebarAndHeader, setIsHideSidebarAndHeader] = useState(false);
+  const [baseUrl, setBaseUrl] = useState("http://localhost:4000");
+  const [alertBox, setAlertBox] = useState({
+    msg:'',
+    error: false,
+    open:false
+  })
 
+  useEffect(()=>{
+    setProgress(30)
+    fetchCategory();
+    fetchBrand();
+
+  }, [])
+
+  const fetchCategory = () => {
+    fetchDataFromApi('/api/category').then((res)=>{
+      setCatData(res);
+      setProgress(100)
+    })
+  }
+
+  const fetchBrand = () => {
+    fetchDataFromApi('/api/brand').then((res)=>{
+      setBrandData(res);
+      setProgress(100)
+    })
+  }
+  
 
   const values={
     isToggleSidebar,
@@ -26,13 +68,53 @@ function App() {
     isLogin, 
     setIsLogin,
     isHideSidebarAndHeader, 
-    setIsHideSidebarAndHeader
+    setIsHideSidebarAndHeader,
+    alertBox, 
+    setAlertBox,
+    progress, 
+    setProgress,
+    baseUrl, 
+    setBaseUrl,
+    catData,
+    setCatData,
+    brandData, 
+    setBrandData,
+    fetchCategory,
+    fetchBrand
   }
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setAlertBox({
+      open:false
+    })
+
+
+  };
 
 
   return (
     <BrowserRouter>
       <MyContext.Provider value={values} >
+      <LoadingBar
+        color='#0858f7'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+        className='topLoadingBar'
+      />
+      <Snackbar open={alertBox.open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity={alertBox.error===false ? "success" : "error"}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {alertBox.msg}
+        </Alert>
+      </Snackbar>
         {
           isHideSidebarAndHeader!==true &&
           <Header />
@@ -54,6 +136,13 @@ function App() {
               <Route path="/products" exact={true} element={<Products />} />
               <Route path="/product/details" exact={true} element={<ProductDetails />} />
               <Route path="/product/upload" exact={true} element={<ProductUpload />} />
+              <Route path="/product/edit/:id" exact={true} element={<ProductEdit />} />
+              <Route path="/category" exact={true} element={<Category />} />
+              <Route path="/category/add" exact={true} element={<CategoryAdd />} />
+              <Route path="/brand/edit/:id" exact={true} element={<EditBrand />} />
+              <Route path="/brand/add" exact={true} element={<AddBrand />} />
+              <Route path="/brand" exact={true} element={<Brand />} />
+              <Route path="/category/edit/:id" exact={true} element={<CategoryEdit />} />
             </Routes>
           </div>
         </div>
