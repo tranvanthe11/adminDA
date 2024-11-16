@@ -89,7 +89,7 @@ const Dashboard = () => {
 
 
                 <div className="card shadow border-0 p-3">
-                    <h3 className="hd">Best Selling Products</h3>
+                    <h3 className="hd">Sản phẩm</h3>
 
                     <div className="row cardFilters mt-2">
                         <div className="col-md-3">
@@ -104,17 +104,21 @@ const Dashboard = () => {
                                 className="w-100"
                                 >
                                 <MenuItem value="">
-                                    <em>None</em>
+                                    <em value={null}>None</em>
                                 </MenuItem>
-                                <MenuItem value={10}>Ten</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
+                                {
+                                    context.catData?.categoryList?.length!==0 && context.catData?.categoryList?.map((cat,index)=>{
+                                        return(
+                                            <MenuItem className='text-capitalize' value={cat.id} key={index}>{cat.name}</MenuItem>
+                                        )
+                                    })
+                                }
                                 </Select>
                             </FormControl>
                         </div>
 
                         <div className="col-md-3">
-                            <h4>Category</h4>
+                            <h4>Loại sản phẩm</h4>
 
                             <FormControl size="small" className="w-100">
                                 <Select
@@ -126,11 +130,15 @@ const Dashboard = () => {
                                 className="w-100"
                                 >
                                 <MenuItem value="">
-                                    <em>None</em>
+                                    <em value={null}>None</em>
                                 </MenuItem>
-                                <MenuItem value={10}>Ten</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
+                                {
+                                    context.catData?.categoryList?.length!==0 && context.catData?.categoryList?.map((cat,index)=>{
+                                        return(
+                                            <MenuItem className='text-capitalize' value={cat.id} key={index}>{cat.name}</MenuItem>
+                                        )
+                                    })
+                                }
                                 </Select>
                             </FormControl>
                         </div>
@@ -141,8 +149,9 @@ const Dashboard = () => {
                             <thead className="thead-dark">
                                 <tr>
                                     <th>Sản phẩm</th>
-                                    <th>Loại</th>
+                                    <th>Loại sản phẩm</th>
                                     <th>Thương hiệu</th>
+                                    {/* <th>Thương hiệu</th> */}
                                     <th>Giá</th>
                                     <th>Sao</th>
                                     <th>Trong kho</th>
@@ -174,7 +183,8 @@ const Dashboard = () => {
                                                 </div>
                                             </td>
                                             <td>{item.category.name}</td>
-                                            <td>{item.brand}</td>
+                                            <td>{item.brand.brand}</td>
+                                            {/* <td>{item.brand}</td> */}
                                             <td>
                                                 <del className="old">{item.oldPrice}</del>
                                                 <span className="new text-danger">{item.price}</span>
@@ -187,7 +197,9 @@ const Dashboard = () => {
                                                     <Link to="/product/details">
                                                         <Button><FaEye /></Button>
                                                     </Link>
-                                                    <Button><FaPencilAlt /></Button>
+                                                    <Link to={`/product/edit/${item.id}`}>
+                                                        <Button><FaPencilAlt /></Button>
+                                                    </Link>
                                                     <Button color="error"
                                                     onClick={()=>deleteProduct(item.id)}><MdDelete /></Button>
                                                 </div>
@@ -209,6 +221,7 @@ const Dashboard = () => {
                                 showFirstButton showLastButton onChange={handleChange}/>
                             </div>
                         }
+
                     </div>
                 </div>
             </div>

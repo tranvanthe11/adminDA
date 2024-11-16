@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo-am-ban.jpg"
 import Button from '@mui/material/Button';
 import { MdMenuOpen } from "react-icons/md";
@@ -23,6 +23,8 @@ import UserAvatar from "../userAvatar";
 
 const Header = () => {
 
+    const history = useNavigate()
+
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -35,6 +37,22 @@ const Header = () => {
     const handleCloseMyAccDrop = () => {
         setAnchorEl(null);
     };
+
+    const logout=()=>{
+        localStorage.clear();
+
+        setAnchorEl(null);
+
+        context.setAlertBox({
+            open: true,
+            msg: "Đăng xuất thành công",
+            error: false
+        })
+
+        setTimeout(() => {
+            history("/login");
+        }, 2000);
+    }
     return(
         <>
             <header className="d-flex align-items-center">
@@ -71,11 +89,16 @@ const Header = () => {
                                 </Link> :
                                 <div className="myAccWrapper">
                                     <Button className="myAcount d-flex align-items-center" onClick={handleOpenMyAccDrop}>
-                                        <UserAvatar img={"https://scontent.fhan2-3.fna.fbcdn.net/v/t39.30808-6/383007770_1343105983301466_455739966004467731_n.jpg?stp=dst-jpg_p526x296&_nc_cat=101&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=C2vtNprX_LwQ7kNvgG0VEJU&_nc_zt=23&_nc_ht=scontent.fhan2-3.fna&_nc_gid=AwTYlgz-2KoHZDO1yNNoht6&oh=00_AYCge1xBY3kLg3Y3RYkSgNGhGJQLa0C-JDjN4xeJSG_m5w&oe=6728EEB6"}/>
+                                        {/* <UserAvatar img={context?.user?.name?.charArt(0)}/> */}
+                                        <div className="userImg">
+                                            <span className="rounded-circle">
+                                            {context?.user?.name?.charAt(0)}
+                                            </span>
+                                        </div>
 
                                         <div className="userInfo">
-                                            <h4>Trần Văn Thế</h4>
-                                            <p className="mb-0">tranvanthe@gmail.com</p>
+                                            <h4>{context.user?.name}</h4>
+                                            <p className="mb-0">{context.user?.email}</p>
                                         </div>
                                     </Button>
 
@@ -102,7 +125,7 @@ const Header = () => {
                                             </ListItemIcon>
                                             Reset Password
                                         </MenuItem>
-                                        <MenuItem onClick={handleCloseMyAccDrop}>
+                                        <MenuItem onClick={logout}>
                                             <ListItemIcon>
                                                 <Logout fontSize="small" />
                                             </ListItemIcon>

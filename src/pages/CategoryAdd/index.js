@@ -186,12 +186,12 @@ const CategoryAdd = () => {
                                 </div>
 
                                 <div className='form-group'>
-                                    <h6>Color</h6>
+                                    <h6>Màu</h6>
                                     <input type='text' name='color' onChange={changeInput} />
                                 </div>
 
                                 <div className='imageUploadSec'>
-                                    <h5 className='mb-4'>Media and published</h5>
+                                    <h5 className='mb-4'>Ảnh</h5>
 
                                     <div className='imgUploadBox d-flex align-items-center'>
                                         {
@@ -220,7 +220,7 @@ const CategoryAdd = () => {
                                             onChange={(e)=>onChangeFile(e, '/api/category/upload')}/>
                                             <div className='info'>
                                                 <FaRegImages />
-                                                <h5>image upload</h5>
+                                                <h5>Tải ảnh</h5>
                                             </div>
                                         </div>
 
@@ -228,7 +228,7 @@ const CategoryAdd = () => {
                                     <br />
 
                                     <Button type="submit" className='btn-blue btn-lg btn-big w-100'>
-                                        <IoMdCloudUpload /> &nbsp;{isLoading===true ? <CircularProgress color="inherit" className=' loader' /> : 'xuat ban va xem'}
+                                        <IoMdCloudUpload /> &nbsp;{isLoading===true ? <CircularProgress color="inherit" className=' loader' /> : 'Thêm và xem'}
                                     </Button>
                                 </div>
 

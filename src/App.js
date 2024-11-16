@@ -21,6 +21,8 @@ import { fetchDataFromApi } from './utils/api';
 import AddBrand from './pages/Category/addBrand';
 import Brand from './pages/Category/brandList';
 import EditBrand from './pages/Category/editBrand';
+import AddProductSize from './pages/Products/addProductSize';
+import AddProductColor from './pages/Products/addProductColor';
 
 const MyContext = createContext();
 
@@ -31,8 +33,13 @@ function App() {
   const [brandData, setBrandData] = useState([]);
 
   const [isToggleSidebar, setIsToggleSidebar] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
   const [isHideSidebarAndHeader, setIsHideSidebarAndHeader] = useState(false);
+  const [user, setUser] = useState({
+    name:"",
+    email:"",
+    userId:""
+  })
   const [baseUrl, setBaseUrl] = useState("http://localhost:4000");
   const [alertBox, setAlertBox] = useState({
     msg:'',
@@ -80,8 +87,22 @@ function App() {
     brandData, 
     setBrandData,
     fetchCategory,
-    fetchBrand
+    fetchBrand,
+    user, 
+    setUser
   }
+
+  useEffect(()=>{
+    const token = localStorage.getItem("token");
+    if(token!==null && token!=="" && token!==undefined){
+      setIsLogin(true)
+      const userData = JSON.parse(localStorage.getItem("user"));
+      
+      setUser(userData)
+    }else{
+      setIsLogin(false)
+    }
+  },[isLogin])
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -143,6 +164,9 @@ function App() {
               <Route path="/brand/add" exact={true} element={<AddBrand />} />
               <Route path="/brand" exact={true} element={<Brand />} />
               <Route path="/category/edit/:id" exact={true} element={<CategoryEdit />} />
+              <Route path="/productSize/add" exact={true} element={<AddProductSize />} />
+              <Route path="/productColor/add" exact={true} element={<AddProductColor />} />
+
             </Routes>
           </div>
         </div>

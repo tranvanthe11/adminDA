@@ -176,12 +176,13 @@ const Products = () => {
                             <thead className="thead-dark">
                                 <tr>
                                     <th>Sản phẩm</th>
-                                    <th>Loại</th>
-                                    <th>Brand</th>
+                                    <th>Loại sản phẩm</th>
+                                    <th>Thương hiệu</th>
                                     {/* <th>Thương hiệu</th> */}
                                     <th>Giá</th>
                                     <th>Sao</th>
                                     <th>Trong kho</th>
+                                    <th>Size</th>
                                     <th>Hành động</th>
                                 </tr>
                             </thead>
@@ -219,6 +220,13 @@ const Products = () => {
                                             {/* <td>{item.rating}</td> */}
                                             <td><Rating name='read-only' defaultValue={item.rating} precision={0.5} size='small' readOnly /></td>
                                             <td>{item.countInStock}</td>
+                                            {/* <td>{item.productSize}</td> */}
+                                            <td>{item.productSize?.map((size)=>{
+                                                return(
+
+                                                    <span className='badge badge-primary mr-2'>{size}</span>
+                                                )
+                                            })}</td>
                                             <td>
                                                 <div className="actions d-flex align-items-center">
                                                     <Link to="/product/details">

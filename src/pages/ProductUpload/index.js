@@ -49,10 +49,13 @@ const ProductUpload = () => {
     const [categoryVal, setCategoryVal] = useState('');
     const [brandVal, setBrandVal] = useState('');
     const [subCatVal, setSubCatVal] = useState('');
-    const [productSizes, setProductSizes] = useState([]);
+    const [productSize, setProductSize] = useState([]);
+    const [productSizeData, setProductSizeData] = useState([]);
+    const [productColor, setProductColor] = useState([]);
+    const [productColorData, setProductColorData] = useState([]);
     const [files, setFiles] = useState([]);
     const [productImagesArr, setproductImagesArr] = useState([]);
-    const [isPromotionValue, setIsPromotionValue] = useState('');
+    const [isNewProductValue, setIsNewProductValue] = useState('');
     const [catData, setCatData] = useState([]);
     const [imgFiles, setImgFiles] = useState();
     const [previews, setPreviews] = useState();
@@ -67,12 +70,14 @@ const ProductUpload = () => {
             description:'',
             // brand:'',
             price:null,
-            discount:null,
+            discount:0,
             category:'',
             brand:'',
             countInStock:null,
             rating:0,
-            isPromotion:null,
+            isNewProduct:null,
+            productSize:[],
+            productColor:[]
     });
     
     const productImages = useRef();
@@ -86,6 +91,15 @@ const ProductUpload = () => {
         window.scrollTo(0,0);
 
         setCatData(context.catData);
+
+        fetchDataFromApi('/api/productSize').then((res)=>{
+            setProductSizeData(res)
+            console.log(res)
+        })
+        fetchDataFromApi('/api/productColor').then((res)=>{
+            setProductColorData(res)
+            console.log(res)
+        })
     }, []);
 
     useEffect(()=>{
@@ -134,17 +148,41 @@ const ProductUpload = () => {
         const {
             target: {value},
         } = event;
-        setProductSizes(
+        setProductSize(
             typeof value === 'string' ? value.split(',') : value ,
         )
+        // setFormFields(()=>(
+        //     {
+        //         ...formFields,
+        //         productSize:productSize
+        //     }
+        // ))
+        formFields.productSize=value;
+
     };
 
-    const handleChangeisPromotionValue = (event) => {
-        setIsPromotionValue(event.target.value);
+    const handleChangeProductColor = (event) => {
+        const {
+            target: {value},
+        } = event;
+        setProductColor(
+            typeof value === 'string' ? value.split(',') : value ,
+        )
+        // setFormFields(()=>(
+        //     {
+        //         ...formFields,
+        //         productColor:productColor
+        //     }
+        // ))
+        formFields.productColor=value;
+    };
+
+    const handleChangeisNewProductValue = (event) => {
+        setIsNewProductValue(event.target.value);
         setFormFields(()=>(
             {
                 ...formFields,
-                isPromotion:event.target.value
+                isNewProduct:event.target.value
             }
         ))
     };
@@ -194,6 +232,7 @@ const ProductUpload = () => {
     
     const addProduct = (e) => {
         e.preventDefault();
+        console.log(productColor)
         
         formdata.append('name', formFields.name);
         formdata.append('description', formFields.description);
@@ -204,7 +243,11 @@ const ProductUpload = () => {
         formdata.append('countInStock', formFields.countInStock);
         formdata.append('discount', formFields.discount);
         formdata.append('rating', formFields.rating);
-        formdata.append('isPromotion', formFields.isPromotion);
+        formdata.append('isNewProduct', formFields.isNewProduct);
+        formdata.append('productSize', formFields.productSize);
+        formdata.append('productColor', formFields.productColor);
+
+        console.log(formFields)
 
         if(formFields.name===""){
             context.setAlertBox({
@@ -278,10 +321,10 @@ const ProductUpload = () => {
             })
             return false;
         }
-        if(formFields.isPromotion===null){
+        if(formFields.isNewProduct===null){
             context.setAlertBox({
                 open: true,
-                msg: "Vui lòng thêm isPromotion",
+                msg: "Vui lòng thêm isNew",
                 error: true
             })
             return false;
@@ -313,6 +356,8 @@ const ProductUpload = () => {
         }
     }
 
+    
+
     return(
         <>  
             <div className="right-content w-100">
@@ -342,22 +387,22 @@ const ProductUpload = () => {
                     <div className='row'>
                         <div className='col-md-12'>
                             <div className='card p-4 mt-0'>
-                                <h5 className='mb-4'>Basic information</h5>
+                                {/* <h5 className='mb-4'>Basic information</h5> */}
 
                                 <div className='form-group'>
-                                    <h6>Ten san pham</h6>
+                                    <h6>Tên sản phẩm</h6>
                                     <input type='text' name='name' value={formFields.name} onChange={inputChange} />
                                 </div>
 
                                 <div className='form-group'>
-                                    <h6>Mo ta</h6>
+                                    <h6>Mô tả</h6>
                                     <textarea row={5} cols={10} name='description' value={formFields.description} onChange={inputChange} />
                                 </div>
 
                                 <div className='row'>
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>Loai san pham</h6>
+                                            <h6>Loại sản phẩm</h6>
                                             <Select
                                             value={categoryVal}
                                             onChange={handleChangeCategory}
@@ -403,31 +448,6 @@ const ProductUpload = () => {
                                         </div>
                                     </div>
 
-                                    {/* <div className='col'>
-                                        <div className='form-group'>
-                                            <h6>Sub category</h6>
-                                            <Select
-                                                value={subCatVal}
-                                                onChange={handleChangeSubCategory}
-                                                displayEmpty
-                                                inputProps={{ 'aria-label': 'Without label' }}
-                                                className='w-100'
-                                                >
-                                                <MenuItem value="">
-                                                    <em value={null}>None</em>
-                                                </MenuItem>
-                                                <MenuItem className='text-capitalize' value='ten'>Ten</MenuItem>
-                                                <MenuItem className='text-capitalize' value='for'>For</MenuItem>
-                                            </Select>
-                                        </div>
-                                    </div> */}
-
-                                    {/* <div className='col'>
-                                        <div className='form-group'>
-                                            <h6>brand</h6>
-                                            <input type='text' name='brand' value={formFields.brand} onChange={inputChange} />
-                                        </div>
-                                    </div> */}
 
                                 </div>
 
@@ -436,17 +456,27 @@ const ProductUpload = () => {
 
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>gia</h6>
+                                            <h6>Giá</h6>
                                             <input type='text' name='price' value={formFields.price} onChange={inputChange} />
                                         </div>
                                     </div>
 
+
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>is Promotion</h6>
+                                            <h6>Số lượng</h6>
+                                            <input type='text' name='countInStock' value={formFields.countInStock} onChange={inputChange} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className='row'>
+                                    <div className='col'>
+                                        <div className='form-group'>
+                                            <h6>is New</h6>
                                             <Select
-                                                value={isPromotionValue}
-                                                onChange={handleChangeisPromotionValue}
+                                                value={isNewProductValue}
+                                                onChange={handleChangeisNewProductValue}
                                                 displayEmpty
                                                 inputProps={{ 'aria-label': 'Without label' }}
                                                 className='w-100'
@@ -459,38 +489,32 @@ const ProductUpload = () => {
                                             </Select>
                                         </div>
                                     </div>
-
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>So luong</h6>
-                                            <input type='text' name='countInStock' value={formFields.countInStock} onChange={inputChange} />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='row'>
-                                    <div className='col'>
-                                        <div className='form-group'>
-                                            <h6>discount</h6>
+                                            <h6>Giảm giá</h6>
                                             <input type='text' name='discount' value={formFields.discount} onChange={inputChange} />
                                         </div>
                                     </div>
 
-                                    {/* <div className='col'>
+                                    <div className='col'>
                                         <div className='form-group'>
                                             <h6>Size</h6>
                                             <Select
                                                 multiple
-                                                value={productSizes}
+                                                value={productSize}
                                                 onChange={handleChangeProductSizes}
                                                 displayEmpty
                                                 className='w-100'
                                                 MenuProps={MenuProps}
                                                 >
-                                                <MenuItem value="M">M</MenuItem>
-                                                <MenuItem value="L">L</MenuItem>
-                                                <MenuItem value="XL">XL</MenuItem>
-                                                <MenuItem value="XXL">XXL</MenuItem>
+                                                    {
+                                                        productSizeData?.length!==0 && productSizeData?.map((item, index)=>{
+
+                                                            return(
+                                                                <MenuItem key={index} value={item.productSize}>{item.productSize}</MenuItem>
+                                                            )
+                                                        })
+                                                    }
                                             </Select>
                                         </div>
                                     </div>
@@ -500,19 +524,23 @@ const ProductUpload = () => {
                                             <h6>Mau</h6>
                                             <Select
                                                 multiple
-                                                value={productSizes}
-                                                onChange={handleChangeProductSizes}
+                                                value={productColor}
+                                                onChange={handleChangeProductColor}
                                                 displayEmpty
                                                 className='w-100'
                                                 MenuProps={MenuProps}
                                                 >
-                                                <MenuItem value="M">M</MenuItem>
-                                                <MenuItem value="L">L</MenuItem>
-                                                <MenuItem value="XL">XL</MenuItem>
-                                                <MenuItem value="XXL">XXL</MenuItem>
+                                                {
+                                                        productColorData?.length!==0 && productColorData?.map((item, index)=>{
+
+                                                            return(
+                                                                <MenuItem key={index} value={item.productColor}>{item.productColor}</MenuItem>
+                                                            )
+                                                        })
+                                                }
                                             </Select>
                                         </div>
-                                    </div> */}
+                                    </div>
 
 
                                 </div>
@@ -562,7 +590,7 @@ const ProductUpload = () => {
 
                     <div className='card p-4 mt-0'>
                                 <div className='imageUploadSec'>
-                                    <h5 className='mb-4'>Media and published</h5>
+                                    <h5 className='mb-4'>Ảnh</h5>
 
                                     <div className='imgUploadBox d-flex align-items-center'>
                                         {
@@ -591,7 +619,7 @@ const ProductUpload = () => {
                                             onChange={(e)=>onChangeFile(e, '/api/products/upload')}/>
                                             <div className='info'>
                                                 <FaRegImages />
-                                                <h5>image upload</h5>
+                                                <h5>Tải ảnh</h5>
                                             </div>
                                         </div>
 
@@ -599,7 +627,7 @@ const ProductUpload = () => {
                                     <br />
 
                                     <Button type="submit" className='btn-blue btn-lg btn-big w-100'>
-                                        <IoMdCloudUpload /> &nbsp;{isLoading===true ? <CircularProgress color="inherit" className=' loader' /> : 'xuat ban va xem'}
+                                        <IoMdCloudUpload /> &nbsp;{isLoading===true ? <CircularProgress color="inherit" className=' loader' /> : 'Thêm và xem'}
                                     </Button>
                                 </div>
                             </div>

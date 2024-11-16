@@ -53,6 +53,12 @@ const Sidebar = () => {
                                 <li>
                                     <Link to="/product/upload">Thêm sản phẩm</Link>
                                 </li>
+                                <li>
+                                    <Link to="/productSize/add">Thêm Size</Link>
+                                </li>
+                                <li>
+                                    <Link to="/productColor/add">Thêm Color</Link>
+                                </li>
                             </ul>
                         </div>
                     </li>

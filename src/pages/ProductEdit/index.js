@@ -53,7 +53,7 @@ const ProductEdit = () => {
     const [productSizes, setProductSizes] = useState([]);
     const [files, setFiles] = useState([]);
     const [productImagesArr, setproductImagesArr] = useState([]);
-    const [isPromotionValue, setIsPromotionValue] = useState('');
+    const [isNewProductValue, setIsNewProductValue] = useState('');
     const [catData, setCatData] = useState([]);
     const [product, setProducts] = useState([]);
     const [imgFiles, setImgFiles] = useState();
@@ -74,7 +74,7 @@ const ProductEdit = () => {
             brand:'',
             countInStock:null,
             rating:0,
-            isPromotion:null,
+            isNewProduct:null,
     });
     
     const productImages = useRef();
@@ -105,12 +105,12 @@ const ProductEdit = () => {
                 brand:res.brand,
                 countInStock:res.countInStock,
                 rating:res.rating,
-                isPromotion:res.isPromotion,
+                isNewProduct:res.isNewProduct,
                 dateCreated:res.dateCreated,
             });
             setRatingValue(res.rating);
             setCategoryVal(res.category.id);
-            setIsPromotionValue(res.isPromotion);
+            setIsNewProductValue(res.isNewProduct);
             setBrandVal(res.brand.id);
             setPreviews(res.images);
             context.setProgress(100);
@@ -168,8 +168,8 @@ const ProductEdit = () => {
         )
     };
 
-    const handleChangeisPromotionValue = (event) => {
-        setIsPromotionValue(event.target.value);
+    const handleChangeisNewProductValue = (event) => {
+        setIsNewProductValue(event.target.value);
         setFormFields(()=>(
             {
                 ...formFields,
@@ -237,7 +237,7 @@ const ProductEdit = () => {
         formdata.append('countInStock', formFields.countInStock);
         formdata.append('discount', formFields.discount);
         formdata.append('rating', formFields.rating);
-        formdata.append('isPromotion', formFields.isPromotion);
+        formdata.append('isNewProduct', formFields.isNewProduct);
 
         if(formFields.name===""){
             context.setAlertBox({
@@ -311,10 +311,10 @@ const ProductEdit = () => {
             })
             return false;
         }
-        if(formFields.isPromotion===null){
+        if(formFields.isNewProduct===null){
             context.setAlertBox({
                 open: true,
-                msg: "Vui lòng thêm isPromotion",
+                msg: "Vui lòng thêm isNew",
                 error: true
             })
             return false;
@@ -377,22 +377,22 @@ const ProductEdit = () => {
                     <div className='row'>
                         <div className='col-md-12'>
                             <div className='card p-4 mt-0'>
-                                <h5 className='mb-4'>Basic information</h5>
+                                {/* <h5 className='mb-4'>Basic information</h5> */}
 
                                 <div className='form-group'>
-                                    <h6>Ten san pham</h6>
+                                    <h6>Tên sản phẩm</h6>
                                     <input type='text' name='name' value={formFields.name} onChange={inputChange} />
                                 </div>
 
                                 <div className='form-group'>
-                                    <h6>Mo ta</h6>
+                                    <h6>Mô tả</h6>
                                     <textarea row={5} cols={10} name='description' value={formFields.description} onChange={inputChange} />
                                 </div>
 
                                 <div className='row'>
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>Loai san pham</h6>
+                                            <h6>Loại sản phẩm</h6>
                                             <Select
                                             value={categoryVal}
                                             onChange={handleChangeCategory}
@@ -416,7 +416,7 @@ const ProductEdit = () => {
 
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>Brand</h6>
+                                            <h6>Thương hiệu</h6>
                                             <Select
                                             value={brandVal}
                                             onChange={handleChangeBrand}
@@ -445,17 +445,27 @@ const ProductEdit = () => {
 
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>gia</h6>
+                                            <h6>Giá</h6>
                                             <input type='text' name='price' value={formFields.price} onChange={inputChange} />
                                         </div>
                                     </div>
 
+
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>is Promotion</h6>
+                                            <h6>Số lượng</h6>
+                                            <input type='text' name='countInStock' value={formFields.countInStock} onChange={inputChange} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className='row'>
+                                    <div className='col'>
+                                        <div className='form-group'>
+                                            <h6>is New</h6>
                                             <Select
-                                                value={isPromotionValue}
-                                                onChange={handleChangeisPromotionValue}
+                                                value={isNewProductValue}
+                                                onChange={handleChangeisNewProductValue}
                                                 displayEmpty
                                                 inputProps={{ 'aria-label': 'Without label' }}
                                                 className='w-100'
@@ -468,19 +478,9 @@ const ProductEdit = () => {
                                             </Select>
                                         </div>
                                     </div>
-
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>So luong</h6>
-                                            <input type='text' name='countInStock' value={formFields.countInStock} onChange={inputChange} />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='row'>
-                                    <div className='col'>
-                                        <div className='form-group'>
-                                            <h6>discount</h6>
+                                            <h6>Giảm giá</h6>
                                             <input type='text' name='discount' value={formFields.discount} onChange={inputChange} />
                                         </div>
                                     </div>
@@ -558,7 +558,7 @@ const ProductEdit = () => {
 
                     <div className='card p-4 mt-0'>
                                 <div className='imageUploadSec'>
-                                    <h5 className='mb-4'>Media and published</h5>
+                                    <h5 className='mb-4'>Ảnh</h5>
 
                                     <div className='imgUploadBox d-flex align-items-center'>
                                     {
@@ -593,7 +593,7 @@ const ProductEdit = () => {
                                             onChange={(e)=>onChangeFile(e, '/api/products/upload')}/>
                                             <div className='info'>
                                                 <FaRegImages />
-                                                <h5>image upload</h5>
+                                                <h5>Tải ảnh</h5>
                                             </div>
                                         </div>
 
@@ -601,7 +601,7 @@ const ProductEdit = () => {
                                     <br />
 
                                     <Button type="submit" className='btn-blue btn-lg btn-big w-100'>
-                                        <IoMdCloudUpload /> &nbsp;{isLoading===true ? <CircularProgress color="inherit" className=' loader' /> : 'xuat ban va xem'}
+                                        <IoMdCloudUpload /> &nbsp;{isLoading===true ? <CircularProgress color="inherit" className=' loader' /> : 'Cập nhật'}
                                     </Button>
                                 </div>
                             </div>

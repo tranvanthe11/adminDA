@@ -56,7 +56,6 @@ const CategoryEdit = () => {
 
     const [formFields, setFormFields] = useState({
         name: '',
-        brand: '',
         color: '',
         images: []
     });
@@ -190,7 +189,6 @@ const CategoryEdit = () => {
         e.preventDefault();
 
         formdata.append('name', formFields.name);
-        formdata.append('brand', formFields.brand);
         formdata.append('color', formFields.color);
 
         if(formFields.name!=="" && formFields.color!=="" && formFields.brand!==""){
@@ -245,18 +243,14 @@ const CategoryEdit = () => {
                                     <h6>Tên loại sản phẩm</h6>
                                     <input type='text' name='name' value={formFields.name} onChange={changeInput} />
                                 </div>
-                                <div className='form-group'>
-                                    <h6>Thương hiệu</h6>
-                                    <input type='text' name='brand' value={formFields.brand} onChange={changeInput} />
-                                </div>
 
                                 <div className='form-group'>
-                                    <h6>Color</h6>
+                                    <h6>Màu</h6>
                                     <input type='text' name='color' value={formFields.color} onChange={changeInput} />
                                 </div>
 
                                 <div className='imageUploadSec'>
-                                    <h5 className='mb-4'>Media and published</h5>
+                                    <h5 className='mb-4'>Ảnh</h5>
 
                                     <div className='imgUploadBox d-flex align-items-center'>
                                         {
@@ -291,7 +285,7 @@ const CategoryEdit = () => {
                                             onChange={(e)=>onChangeFile(e, '/api/category/upload')}/>
                                             <div className='info'>
                                                 <FaRegImages />
-                                                <h5>image upload</h5>
+                                                <h5>Tải ảnh</h5>
                                             </div>
                                         </div>
 
@@ -299,7 +293,7 @@ const CategoryEdit = () => {
                                     <br />
 
                                     <Button type="submit" className='btn-blue btn-lg btn-big w-100'>
-                                        <IoMdCloudUpload /> &nbsp;{isLoading===true ? <CircularProgress color="inherit" className=' loader' /> : 'cap nhat'}
+                                        <IoMdCloudUpload /> &nbsp;{isLoading===true ? <CircularProgress color="inherit" className=' loader' /> : 'Cập nhật'}
                                     </Button>
                                 </div>
 
