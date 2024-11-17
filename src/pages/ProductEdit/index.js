@@ -3,18 +3,13 @@ import Chip from '@mui/material/Chip';
 import HomeIcon from '@mui/icons-material/Home';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { emphasize, styled } from '@mui/material/styles';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Rating from '@mui/material/Rating';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Button } from '@mui/material';
 import { IoMdCloudUpload } from "react-icons/io";
-import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
-import { IoCloseSharp } from "react-icons/io5";
 import { FaRegImages } from "react-icons/fa";
 import { editData, fetchDataFromApi, postData } from '../../utils/api';
 import { MyContext } from '../../App';
@@ -46,20 +41,21 @@ const ProductEdit = () => {
 
     const history = useNavigate();
 
+    const [productSize, setProductSize] = useState([]);
+    const [productSizeData, setProductSizeData] = useState([]);
+    const [productColor, setProductColor] = useState([]);
+    const [productColorData, setProductColorData] = useState([]);
+
     
     const [categoryVal, setCategoryVal] = useState('');
     const [brandVal, setBrandVal] = useState('');
-    const [subCatVal, setSubCatVal] = useState('');
-    const [productSizes, setProductSizes] = useState([]);
     const [files, setFiles] = useState([]);
-    const [productImagesArr, setproductImagesArr] = useState([]);
     const [isNewProductValue, setIsNewProductValue] = useState('');
     const [catData, setCatData] = useState([]);
     const [product, setProducts] = useState([]);
     const [imgFiles, setImgFiles] = useState();
     const [previews, setPreviews] = useState();
     const [isLoading, setIsLoading] = useState(false);
-    const [count, setCount] = useState(0);
     const [isSelectdImages,setIsSelectdImages] = useState(false);
 
     const [ratingValue, setRatingValue] = useState(1);
@@ -67,17 +63,17 @@ const ProductEdit = () => {
     const [formFields, setFormFields] = useState({
             name:'',
             description:'',
-            // brand:'',
             price:null,
             discount:null,
+            catName:'',
             category:'',
             brand:'',
-            countInStock:null,
             rating:0,
             isNewProduct:null,
+            sizesAndColors: [],
+
     });
     
-    const productImages = useRef();
 
     const context = useContext(MyContext);
 
@@ -93,19 +89,26 @@ const ProductEdit = () => {
 
         setCatData(context.catData);
 
+        fetchDataFromApi('/api/productSize').then((res)=>{
+            setProductSizeData(res)
+        })
+        fetchDataFromApi('/api/productColor').then((res)=>{
+            setProductColorData(res)
+        })
+
         fetchDataFromApi(`/api/products/${id}`).then((res)=>{
             setProducts(res)
             setFormFields({
                 name:res.name,
                 description:res.description,
-                // brand:res.brand,
                 price:res.price,
                 discount:res.discount,
+                catName:res.catName,
                 category:res.category,
                 brand:res.brand,
-                countInStock:res.countInStock,
                 rating:res.rating,
                 isNewProduct:res.isNewProduct,
+                sizesAndColors:res.sizesAndColors,
                 dateCreated:res.dateCreated,
             });
             setRatingValue(res.rating);
@@ -113,6 +116,10 @@ const ProductEdit = () => {
             setIsNewProductValue(res.isNewProduct);
             setBrandVal(res.brand.id);
             setPreviews(res.images);
+            const sizes = res.sizesAndColors.map(item => item.size); 
+            setProductSize(sizes);
+            const colors = res.sizesAndColors.map(item => item.color); 
+            setProductColor(colors);          
             context.setProgress(100);
         })
     }, []);
@@ -134,7 +141,6 @@ const ProductEdit = () => {
         }
     }, [imgFiles])
 
-    const imagesArr = [];
     const handleChangeCategory = (event) => {
         setCategoryVal(event.target.value);
         setFormFields(()=>(
@@ -143,6 +149,24 @@ const ProductEdit = () => {
                 category:event.target.value
             }
         ))
+    };
+
+    // const selectCatName=(cat)=>{
+    //     formFields.catName=cat;
+    // }
+
+    const removeDiacriticsAndSpaces = (str) => {
+        return str
+            .normalize('NFD') // Chuẩn hóa chuỗi Unicode
+            .replace(/[\u0300-\u036f]/g, '') // Loại bỏ dấu
+            .replace(/\s+/g, '') // Loại bỏ khoảng cách
+            .toLowerCase(); // Chuyển thành chữ thường nếu cần
+    };
+    
+    const selectCatName = (catName) => {
+        const processedCatName = removeDiacriticsAndSpaces(catName);
+        console.log(processedCatName); // Kiểm tra kết quả, ví dụ: "quanjeans"
+        formFields.catName=processedCatName;
     };
 
     const handleChangeBrand = (event) => {
@@ -155,17 +179,68 @@ const ProductEdit = () => {
         ))
     };
 
-    const handleChangeSubCategory = (event) => {
-        setSubCatVal(event.target.value);
-    };
     
     const handleChangeProductSizes = (event) => {
-        const {
-            target: {value},
-        } = event;
-        setProductSizes(
-            typeof value === 'string' ? value.split(',') : value ,
-        )
+        const { target: { value } } = event;
+        const selectedSizes = typeof value === 'string' ? value.split(',') : value;
+        setProductSize(selectedSizes);
+    
+        setFormFields((prev) => ({
+            ...prev,
+            productSize: selectedSizes,
+            sizesAndColors: [
+                ...(prev.sizesAndColors || []), // Đảm bảo `sizesAndColors` là mảng
+                ...selectedSizes?.flatMap((size) => 
+                    productColor?.map((color) => ({
+                        size,
+                        color,
+                        countInStock: 0, // Mặc định
+                    }))
+                ).filter(
+                    (item) =>
+                        !prev.sizesAndColors.some(
+                            (existing) =>
+                                existing.size === item.size && existing.color === item.color
+                        )
+                ),
+            ],
+        }));
+    };
+    
+    const handleChangeProductColor = (event) => {
+        const { target: { value } } = event;
+        const selectedColors = typeof value === 'string' ? value.split(',') : value;
+        setProductColor(selectedColors);
+    
+        setFormFields((prev) => ({
+            ...prev,
+            productColor: selectedColors,
+            sizesAndColors: [
+                ...(prev.sizesAndColors || []), 
+                ...productSize?.flatMap((size) =>
+                    selectedColors?.map((color) => ({
+                        size,
+                        color,
+                        countInStock: 0,
+                    }))
+                ).filter(
+                    (item) =>
+                        !prev.sizesAndColors.some(
+                            (existing) =>
+                                existing.size === item.size && existing.color === item.color
+                        )
+                ),
+            ],
+        }));
+    };
+
+    const handleStockChange = (index, value) => {
+        setFormFields((prev) => ({
+            ...prev,
+            sizesAndColors: prev.sizesAndColors.map((item, i) =>
+                i === index ? { ...item, countInStock: parseInt(value) } : item
+            ),
+        }));
     };
 
     const handleChangeisNewProductValue = (event) => {
@@ -191,6 +266,7 @@ const ProductEdit = () => {
         try {
             const imgArr = [];
             const files = e.target.files;
+            console.log('files',files)
             // setImgFiles(e.target.files)
             for(var i=0; i<files.length; i++){
                 if(files[i] && (files[i].type === 'image/jpeg' || files[i].type === 'image/jpg' 
@@ -230,14 +306,14 @@ const ProductEdit = () => {
         
         formdata.append('name', formFields.name);
         formdata.append('description', formFields.description);
-        // formdata.append('brand', formFields.brand);
+        formdata.append('catName', formFields.catName);
         formdata.append('category', formFields.category);
         formdata.append('brand', formFields.brand);
         formdata.append('price', formFields.price);
-        formdata.append('countInStock', formFields.countInStock);
         formdata.append('discount', formFields.discount);
         formdata.append('rating', formFields.rating);
         formdata.append('isNewProduct', formFields.isNewProduct);
+        formdata.append("sizesAndColors", JSON.stringify(formFields.sizesAndColors));
 
         if(formFields.name===""){
             context.setAlertBox({
@@ -255,14 +331,6 @@ const ProductEdit = () => {
             })
             return false;
         }
-        // if(formFields.brand===""){
-        //     context.setAlertBox({
-        //         open: true,
-        //         msg: "Vui lòng thêm brand",
-        //         error: true
-        //     })
-        //     return false;
-        // }
         if(formFields.brand===""){
             context.setAlertBox({
                 open: true,
@@ -283,14 +351,6 @@ const ProductEdit = () => {
             context.setAlertBox({
                 open: true,
                 msg: "Vui lòng thêm gia",
-                error: true
-            })
-            return false;
-        }
-        if(formFields.countInStock===null){
-            context.setAlertBox({
-                open: true,
-                msg: "Vui lòng thêm countInStock",
                 error: true
             })
             return false;
@@ -320,6 +380,15 @@ const ProductEdit = () => {
             return false;
         }
 
+        if (!formFields.sizesAndColors || formFields.sizesAndColors.length === 0) {
+            context.setAlertBox({
+                open: true,
+                msg: "Vui lòng chọn size và màu sắc với số lượng tương ứng.",
+                error: true,
+            });
+            return false;
+        }
+
         setIsLoading(true);
 
         
@@ -336,7 +405,6 @@ const ProductEdit = () => {
         })
     }
 
-    console.log(context.catData.categoryList)
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
     const MenuProps = {
@@ -406,7 +474,10 @@ const ProductEdit = () => {
                                             {
                                                 context.catData?.categoryList?.length!==0 && context.catData?.categoryList?.map((cat,index)=>{
                                                     return(
-                                                        <MenuItem className='text-capitalize' value={cat.id} key={index}>{cat.name}</MenuItem>
+                                                        <MenuItem className='text-capitalize' 
+                                                        value={cat.id} key={index} 
+                                                        onClick={()=>selectCatName(cat.name)}
+                                                        >{cat.name}</MenuItem>
                                                     )
                                                 })
                                             }
@@ -450,19 +521,19 @@ const ProductEdit = () => {
                                         </div>
                                     </div>
 
-
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>Số lượng</h6>
-                                            <input type='text' name='countInStock' value={formFields.countInStock} onChange={inputChange} />
+                                            <h6>Giảm giá</h6>
+                                            <input type='text' name='discount' value={formFields.discount} onChange={inputChange} />
                                         </div>
                                     </div>
+
                                 </div>
 
                                 <div className='row'>
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>is New</h6>
+                                            <h6>Sản phẩm mới</h6>
                                             <Select
                                                 value={isNewProductValue}
                                                 onChange={handleChangeisNewProductValue}
@@ -478,57 +549,8 @@ const ProductEdit = () => {
                                             </Select>
                                         </div>
                                     </div>
-                                    <div className='col'>
-                                        <div className='form-group'>
-                                            <h6>Giảm giá</h6>
-                                            <input type='text' name='discount' value={formFields.discount} onChange={inputChange} />
-                                        </div>
-                                    </div>
-
-                                    {/* <div className='col'>
-                                        <div className='form-group'>
-                                            <h6>Size</h6>
-                                            <Select
-                                                multiple
-                                                value={productSizes}
-                                                onChange={handleChangeProductSizes}
-                                                displayEmpty
-                                                className='w-100'
-                                                MenuProps={MenuProps}
-                                                >
-                                                <MenuItem value="M">M</MenuItem>
-                                                <MenuItem value="L">L</MenuItem>
-                                                <MenuItem value="XL">XL</MenuItem>
-                                                <MenuItem value="XXL">XXL</MenuItem>
-                                            </Select>
-                                        </div>
-                                    </div>
 
                                     <div className='col'>
-                                        <div className='form-group'>
-                                            <h6>Mau</h6>
-                                            <Select
-                                                multiple
-                                                value={productSizes}
-                                                onChange={handleChangeProductSizes}
-                                                displayEmpty
-                                                className='w-100'
-                                                MenuProps={MenuProps}
-                                                >
-                                                <MenuItem value="M">M</MenuItem>
-                                                <MenuItem value="L">L</MenuItem>
-                                                <MenuItem value="XL">XL</MenuItem>
-                                                <MenuItem value="XXL">XXL</MenuItem>
-                                            </Select>
-                                        </div>
-                                    </div> */}
-
-
-                                </div>
-
-                                <div className='row'>
-
-                                    <div className='col-md-4'>
                                         <div className='form-group'>
                                             <h6>Rating</h6>
                                             <Rating
@@ -547,6 +569,91 @@ const ProductEdit = () => {
                                         </div>
                                     </div>
 
+
+                                </div>
+
+                                <div className='row'>
+
+                                    <div className='col'>
+                                        <div className='form-group'>
+                                            <h6>Kích cỡ</h6>
+                                            <Select
+                                                multiple
+                                                value={productSize}
+                                                onChange={handleChangeProductSizes}
+                                                displayEmpty
+                                                className='w-100'
+                                                MenuProps={MenuProps}
+                                                >
+                                                    {
+                                                        productSizeData?.length!==0 && productSizeData?.map((item, index)=>{
+
+                                                            return(
+                                                                <MenuItem key={index} value={item.productSize}>{item.productSize}</MenuItem>
+                                                            )
+                                                        })
+                                                    }
+                                            </Select>
+                                        </div>
+                                    </div>
+
+                                    <div className='col'>
+                                        <div className='form-group'>
+                                            <h6>Màu</h6>
+                                            <Select
+                                                multiple
+                                                value={productColor}
+                                                onChange={handleChangeProductColor}
+                                                displayEmpty
+                                                className='w-100'
+                                                MenuProps={MenuProps}
+                                                >
+                                                {
+                                                        productColorData?.length!==0 && productColorData?.map((item, index)=>{
+
+                                                            return(
+                                                                <MenuItem key={index} value={item.productColor}>{item.productColor}</MenuItem>
+                                                            )
+                                                        })
+                                                }
+                                            </Select>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <h5>Danh sách Size và Màu</h5>
+                                <div className='row'>
+                                    <div className='p-3 mt-0 col-sm-6' >
+                                        <div className=" mt-3">
+                                            <table className="table table-bordered v-align">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Size</th>
+                                                        <th>Màu</th>
+                                                        <th>Số lượng</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {formFields?.sizesAndColors?.map((item, index) => (
+                                                        <tr key={index}>
+                                                            <td>{item.size}</td>
+                                                            <td>{item.color}</td>
+                                                            <td>
+                                                                <input
+                                                                    type="text"
+                                                                    value={item.countInStock}
+                                                                    onChange={(e) => handleStockChange(index, e.target.value)}
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
 
                                 </div>
 
@@ -576,17 +683,6 @@ const ProductEdit = () => {
                                                 )
                                             })
                                         }
-                                        {/* <div className='uploadBox'>
-                                            <span className='remove'><IoCloseSharp /></span>
-                                            <div className='box'>
-                                                <LazyLoadImage
-                                                alt={"image"}
-                                                effect="blur"
-                                                className="w-100"
-                                                src={'https://mironcoder-hotash.netlify.app/images/product/single/01.webp'}
-                                                />
-                                            </div>
-                                        </div> */}
 
                                         <div className='uploadBox'>
                                             <input type='file' multiple name='images' 

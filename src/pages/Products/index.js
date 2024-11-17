@@ -181,8 +181,8 @@ const Products = () => {
                                     {/* <th>Thương hiệu</th> */}
                                     <th>Giá</th>
                                     <th>Sao</th>
-                                    <th>Trong kho</th>
                                     <th>Size</th>
+                                    <th>Color</th>
                                     <th>Hành động</th>
                                 </tr>
                             </thead>
@@ -212,21 +212,25 @@ const Products = () => {
                                             </td>
                                             <td>{item.category.name}</td>
                                             <td>{item.brand.brand}</td>
-                                            {/* <td>{item.brand}</td> */}
                                             <td>
                                                 <del className="old">{item.oldPrice}</del>
                                                 <span className="new text-danger">{item.price}</span>
                                             </td>
-                                            {/* <td>{item.rating}</td> */}
                                             <td><Rating name='read-only' defaultValue={item.rating} precision={0.5} size='small' readOnly /></td>
-                                            <td>{item.countInStock}</td>
-                                            {/* <td>{item.productSize}</td> */}
-                                            <td>{item.productSize?.map((size)=>{
-                                                return(
-
-                                                    <span className='badge badge-primary mr-2'>{size}</span>
-                                                )
-                                            })}</td>
+                                            <td>
+                                                {[...new Set(item?.sizesAndColors?.map((entry) => entry.size))].map((uniqueSize, index) => (
+                                                    <span className="badge badge-primary mr-2" key={index}>
+                                                        {uniqueSize}
+                                                    </span>
+                                                ))}
+                                            </td>
+                                            <td>
+                                                {[...new Set(item?.sizesAndColors?.map((entry) => entry.color))].map((uniqueColor, index) => (
+                                                    <span className="badge badge-primary mr-2" key={index}>
+                                                        {uniqueColor}
+                                                    </span>
+                                                ))}
+                                            </td>
                                             <td>
                                                 <div className="actions d-flex align-items-center">
                                                     <Link to="/product/details">
