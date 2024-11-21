@@ -203,17 +203,6 @@ const CategoryAdd = () => {
                                                 )
                                             })
                                         }
-                                        {/* <div className='uploadBox'>
-                                            <span className='remove'><IoCloseSharp /></span>
-                                            <div className='box'>
-                                                <LazyLoadImage
-                                                alt={"image"}
-                                                effect="blur"
-                                                className="w-100"
-                                                src={'https://mironcoder-hotash.netlify.app/images/product/single/01.webp'}
-                                                />
-                                            </div>
-                                        </div> */}
 
                                         <div className='uploadBox'>
                                             <input type='file' name='images' 

@@ -45,13 +45,9 @@ const ProductUpload = () => {
 
     const history = useNavigate();
 
-    //Size và color
-    const [sizesAndColors, setSizesAndColors] = useState([{ size: '', color: '', countInStock: 0 }]);
-
     
     const [categoryVal, setCategoryVal] = useState('');
     const [brandVal, setBrandVal] = useState('');
-    const [subCatVal, setSubCatVal] = useState('');
     const [productSize, setProductSize] = useState([]);
     const [productSizeData, setProductSizeData] = useState([]);
     const [productColor, setProductColor] = useState([]);
@@ -74,7 +70,8 @@ const ProductUpload = () => {
             price:null,
             discount:0,
             catName:'',
-            // brandName:'',
+            catId:'',
+            brandName:'',
             category:'',
             brand:'',
             rating:0,
@@ -125,11 +122,12 @@ const ProductUpload = () => {
                 category:event.target.value
             }
         ))
+        formFields.catId=event.target.value
     };
 
-    // const selectCatName=(cat)=>{
-    //     formFields.catName=cat;
-    // }
+    const selectBrandName=(brand)=>{
+        formFields.brandName=brand;
+    }
 
     const removeDiacriticsAndSpaces = (str) => {
         return str
@@ -302,6 +300,8 @@ const ProductUpload = () => {
         formdata.append('name', formFields.name);
         formdata.append('description', formFields.description);
         formdata.append('catName', formFields.catName);
+        formdata.append('catId', formFields.catId);
+        formdata.append('brandName', formFields.brandName);
         formdata.append('category', formFields.category);
         formdata.append('brand', formFields.brand);
         formdata.append('price', formFields.price);
@@ -505,7 +505,9 @@ const ProductUpload = () => {
                                             {
                                                 context.brandData?.length!==0 && context.brandData?.map((brand,index)=>{
                                                     return(
-                                                        <MenuItem className='text-capitalize' value={brand.id} key={index}>{brand.brand}</MenuItem>
+                                                        <MenuItem className='text-capitalize' 
+                                                        onClick={()=>selectBrandName(brand.brand)}
+                                                        value={brand.id} key={index}>{brand.brand}</MenuItem>
                                                     )
                                                 })
                                             }
