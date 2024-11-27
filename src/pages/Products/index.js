@@ -180,7 +180,7 @@ const Products = () => {
                                     <th>Thương hiệu</th>
                                     {/* <th>Thương hiệu</th> */}
                                     <th>Giá</th>
-                                    <th>Sao</th>
+                                    {/* <th>Sao</th> */}
                                     <th>Size</th>
                                     <th>Color</th>
                                     <th>Hành động</th>
@@ -202,7 +202,7 @@ const Products = () => {
                                                     <div className="imgWrapper">
                                                         <div className="img">
                                                             <img className="w-100" 
-                                                            src={`${context.baseUrl}/upload/${item.images[0]}`} />
+                                                            src={item.images[0]} />
                                                         </div>
                                                     </div>
                                                     <div className="info pl-1">
@@ -213,10 +213,15 @@ const Products = () => {
                                             <td>{item.category.name}</td>
                                             <td>{item.brand.brand}</td>
                                             <td>
-                                                <del className="old">{item.oldPrice}</del>
-                                                <span className="new text-danger">{item.price}</span>
+                                                <del className="old">
+                                                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.oldPrice)}
+                                                </del>
+                                                <span className="new text-danger">
+                                                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
+
+                                                </span>
                                             </td>
-                                            <td><Rating name='read-only' defaultValue={item.rating} precision={0.5} size='small' readOnly /></td>
+                                            {/* <td><Rating name='read-only' defaultValue={item.rating} precision={0.5} size='small' readOnly /></td> */}
                                             <td>
                                                 {[...new Set(item?.sizesAndColors?.map((entry) => entry.size))].map((uniqueSize, index) => (
                                                     <span className="badge badge-primary mr-2" key={index}>
@@ -233,7 +238,7 @@ const Products = () => {
                                             </td>
                                             <td>
                                                 <div className="actions d-flex align-items-center">
-                                                    <Link to="/product/details">
+                                                    <Link to={`/product/details/${item?.id}`}>
                                                         <Button><FaEye /></Button>
                                                     </Link>
                                                     <Link to={`/product/edit/${item.id}`}>

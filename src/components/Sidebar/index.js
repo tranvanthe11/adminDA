@@ -4,22 +4,39 @@ import { FaAngleRight } from "react-icons/fa";
 import { FaProductHunt } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { MdLogout } from "react-icons/md";
 import { MyContext } from "../../App";
 import { BiSolidCategory } from "react-icons/bi";
+import { useNavigate } from 'react-router-dom';
+
+
 
 const Sidebar = () => {
+  const history = useNavigate()
+
 
     const context = useContext(MyContext);
 
     const [activeTab, setActiveTab] = useState(0);
+  const [isLogin, setIsLogin] = useState(false);
+
     const [isToggleSubmenu, setIsToggleSubmenu] = useState(false);
 
     const isOpenSubmenu=(index)=>{
         setActiveTab(index);
         setIsToggleSubmenu(!isToggleSubmenu);
     }
+
+    useEffect(()=>{
+        const token = localStorage.getItem("token");
+        if(token!==null && token!=="" && token!==undefined){
+          setIsLogin(true)
+        }else
+        {
+          history('/login')
+        }
+      }, [])
 
     return(
         <>
@@ -46,9 +63,6 @@ const Sidebar = () => {
                             <ul className='submenu'>
                                 <li>
                                     <Link to="/products">Danh sách sản phẩm</Link>
-                                </li>
-                                <li>
-                                    <Link to="/product/details">Xem sản phẩm</Link>
                                 </li>
                                 <li>
                                     <Link to="/product/upload">Thêm sản phẩm</Link>
@@ -80,21 +94,24 @@ const Sidebar = () => {
                             </ul>
                         </div>
                     </li>
-                    {/* <li>
-                        <Button className={`w-100 ${activeTab===2 && isToggleSubmenu===true ? 'active' : ''}`}
-                        onClick={()=>isOpenSubmenu(2)}>
+                    <li>
+                        <Button className={`w-100 ${activeTab===3 && isToggleSubmenu===true ? 'active' : ''}`}
+                        onClick={()=>isOpenSubmenu(3)}>
                             <span className='icon'><FaShoppingCart /></span>
                             Đơn hàng
                             <span className='arrow'><FaAngleRight /></span>
                         </Button>
-                        <div className={`submenuWrapper ${activeTab===2 && isToggleSubmenu===true ? 'colapse' : 'colapsed'}`}>
+                        <div className={`submenuWrapper ${activeTab===3 && isToggleSubmenu===true ? 'colapse' : 'colapsed'}`}>
                             <ul className='submenu'>
                                 <li>
-                                    <Link to="#">Danh sách đơn hàng</Link>
+                                    <Link to="/ordersNew">Đơn mới</Link>
+                                </li>
+                                <li>
+                                    <Link to="/orders">Danh sách đơn hàng</Link>
                                 </li>
                             </ul>
                         </div>
-                    </li> */}
+                    </li>
                 </ul>
 
                 <br />

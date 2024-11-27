@@ -39,6 +39,19 @@ export const postData = async (url, formData) => {
     return res;
 }
 
+export const postDataImg = async (url, formData) => {
+    try {
+        // Gửi formData với axios
+        const response = await axios.post("http://localhost:4000" + url, formData);
+        
+        // Trả về data từ response
+        return response.data; // response.data chứa dữ liệu trả về từ server
+    } catch (error) {
+        console.error("Error posting data", error);
+        throw error; // Nếu có lỗi, throw error để xử lý ở nơi gọi hàm
+    }
+}
+
 export const editData = async (url, updatedData) => {
     const {res} = await axios.put(`http://localhost:4000${url}`, updatedData)
     return res;

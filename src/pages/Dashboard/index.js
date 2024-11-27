@@ -88,7 +88,7 @@ const Dashboard = () => {
                 </div>
 
 
-                <div className="card shadow border-0 p-3">
+                {/* <div className="card shadow border-0 p-3">
                     <h3 className="hd">Sản phẩm</h3>
 
                     <div className="row cardFilters mt-2">
@@ -151,7 +151,6 @@ const Dashboard = () => {
                                     <th>Sản phẩm</th>
                                     <th>Loại sản phẩm</th>
                                     <th>Thương hiệu</th>
-                                    {/* <th>Thương hiệu</th> */}
                                     <th>Giá</th>
                                     <th>Sao</th>
                                     <th>Trong kho</th>
@@ -164,11 +163,7 @@ const Dashboard = () => {
                                     productList?.products?.length!==0 && productList?.products?.map((item,index)=>{
                                         return(
                                             <tr>
-                                            {/* <td>
-                                                <div className="d-flex align-items-center">
-                                                <Checkbox {...label} /><span>1</span>
-                                                </div>
-                                            </td> */}
+
                                             <td>
                                                 <div className="d-flex align-items-center productBox">
                                                     <div className="imgWrapper">
@@ -184,12 +179,10 @@ const Dashboard = () => {
                                             </td>
                                             <td>{item.category.name}</td>
                                             <td>{item.brand.brand}</td>
-                                            {/* <td>{item.brand}</td> */}
                                             <td>
                                                 <del className="old">{item.oldPrice}</del>
                                                 <span className="new text-danger">{item.price}</span>
                                             </td>
-                                            {/* <td>{item.rating}</td> */}
                                             <td><Rating name='read-only' defaultValue={item.rating} precision={0.5} size='small' readOnly /></td>
                                             <td>{item.countInStock}</td>
                                             <td>
@@ -223,7 +216,7 @@ const Dashboard = () => {
                         }
 
                     </div>
-                </div>
+                </div> */}
             </div>
         </>
     )

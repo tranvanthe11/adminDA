@@ -6,7 +6,7 @@ import { emphasize, styled } from '@mui/material/styles';
 import { useContext, useEffect, useState } from 'react';
 import { Button } from '@mui/material';
 import { IoMdCloudUpload } from "react-icons/io";
-import { postData } from '../../utils/api';
+import { postData, postDataImg, postDataUser } from '../../utils/api';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import { MyContext } from '../../App';
@@ -84,45 +84,59 @@ const CategoryAdd = () => {
         try {
             const imgArr = [];
             const files = e.target.files;
-            // setImgFiles(e.target.files)
-            for(var i=0; i<files.length; i++){
-                if(files[i] && (files[i].type === 'image/jpeg' || files[i].type === 'image/jpg' 
+            for (var i = 0; i < files.length; i++) {
+                if (files[i] && (files[i].type === 'image/jpeg' || files[i].type === 'image/jpg' 
                     || files[i].type === 'image/png' || files[i].type === 'image/webp')) {
                     setImgFiles(e.target.files)
-
                     const file = files[i];
                     imgArr.push(file);
                     formdata.append(`images`, file)
-
+    
                     setFiles(imgArr);
                     context.setAlertBox({
                         open: true,
                         error: false,
-                        msg: "Them anh thanh cong"
+                        msg: "Thêm ảnh thành công"
                     });
-
+    
                     setIsSelectdFiles(true);
-
-                    postData(apiEndPoint, formdata).then((res)=>{
+    
+                    postDataImg(apiEndPoint, formdata).then((res) => {
+                        console.log(res); // Kiểm tra dữ liệu trả về
+                        if (res && res.images) { // Đảm bảo rằng 'res' chứa thuộc tính 'images'
+                            const { images } = res;
+                            setFormFields({
+                                ...formFields,
+                                images: images // Lưu URL ảnh vào formFields
+                            });
+                        } else {
+                            context.setAlertBox({
+                                open: true,
+                                error: true,
+                                msg: "Lỗi tải ảnh lên Cloudinary."
+                            });
+                        }
+                    }).catch((error) => {
+                        console.log(error);
                         context.setAlertBox({
                             open: true,
-                            error: false,
-                            msg: "Them anh thanh cong"
+                            error: true,
+                            msg: "Đã có lỗi xảy ra khi tải ảnh."
                         });
-                    })
-                } else{
+                    });
+                } else {
                     context.setAlertBox({
                         open: true,
                         error: true,
-                        msg: "vui long them anh"
+                        msg: "Vui lòng thêm ảnh"
                     });
                 }
             }
-
-        } catch(error){
-            console.log(error)
+        } catch (error) {
+            console.log(error);
         }
     }
+    
 
     
     const addCategory = (e) => {
@@ -130,6 +144,11 @@ const CategoryAdd = () => {
 
         formdata.append('name', formFields.name);
         formdata.append('color', formFields.color);
+        // formFields.images.forEach((image) => {
+        //     formdata.append('images', image); // Nếu cần gửi mảng ảnh vào backend
+        // });
+
+        console.log(formFields)
 
         if(formFields.name!=="" && formFields.color!=="" && isSelectdFiles!==false){
             setIsLoading(true);

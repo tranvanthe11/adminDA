@@ -11,7 +11,7 @@ import { Button } from '@mui/material';
 import { IoMdCloudUpload } from "react-icons/io";
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { FaRegImages } from "react-icons/fa";
-import { editData, fetchDataFromApi, postData } from '../../utils/api';
+import { editData, fetchDataFromApi, postData, postDataImg } from '../../utils/api';
 import { MyContext } from '../../App';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
@@ -46,6 +46,7 @@ const ProductEdit = () => {
     const [productColor, setProductColor] = useState([]);
     const [productColorData, setProductColorData] = useState([]);
 
+
     
     const [categoryVal, setCategoryVal] = useState('');
     const [brandVal, setBrandVal] = useState('');
@@ -73,6 +74,8 @@ const ProductEdit = () => {
             rating:0,
             isNewProduct:null,
             sizesAndColors: [],
+            images: [],
+            sold: 0
 
     });
     
@@ -114,12 +117,14 @@ const ProductEdit = () => {
                 isNewProduct:res.isNewProduct,
                 sizesAndColors:res.sizesAndColors,
                 dateCreated:res.dateCreated,
+                images: res.images || [],
+                sold: res.sold || 0,
             });
             setRatingValue(res.rating);
             setCategoryVal(res.category.id);
             setIsNewProductValue(res.isNewProduct);
             setBrandVal(res.brand.id);
-            setPreviews(res.images);
+            setPreviews(res.images || []);
             const sizes = res.sizesAndColors.map(item => item.size); 
             setProductSize(sizes);
             const colors = res.sizesAndColors.map(item => item.color); 
@@ -271,44 +276,53 @@ const ProductEdit = () => {
         ))
     }
 
-    const onChangeFile = async(e, apiEndPoint) => {
+    const onChangeFile = async (e, apiEndPoint) => {
         try {
             const imgArr = [];
             const files = e.target.files;
-            console.log('files',files)
-            // setImgFiles(e.target.files)
-            for(var i=0; i<files.length; i++){
-                if(files[i] && (files[i].type === 'image/jpeg' || files[i].type === 'image/jpg' 
-                    || files[i].type === 'image/png' || files[i].type === 'image/webp')) {
-                    setImgFiles(e.target.files)
-
+    
+            for (let i = 0; i < files.length; i++) {
+                if (files[i] && (files[i].type === 'image/jpeg' || files[i].type === 'image/jpg' || files[i].type === 'image/png' || files[i].type === 'image/webp')) {
                     const file = files[i];
                     imgArr.push(file);
-                    formdata.append(`images`, file)
-
-                } else{
+                    formdata.append('images', file);  // Cập nhật ảnh mới
+                }
+            }
+    
+            setImgFiles(e.target.files);
+            setIsSelectdImages(true);
+    
+            context.setAlertBox({
+                open: true,
+                error: false,
+                msg: "Thêm ảnh thành công"
+            });
+    
+            postDataImg(apiEndPoint, formdata).then((res) => {
+                if (res && res.images) {
+                    setFormFields({
+                        ...formFields,
+                        images: res.images 
+                    });
+                } else {
                     context.setAlertBox({
                         open: true,
                         error: true,
-                        msg: "vui long them anh"
+                        msg: "Lỗi tải ảnh lên Cloudinary."
                     });
                 }
-            }
-                    setIsSelectdImages(true);
-                    setFiles(imgArr);
-
-                    postData(apiEndPoint, formdata ).then((res)=>{
-                        context.setAlertBox({
-                            open: true,
-                            error: false,
-                            msg: "Them anh thanh cong"
-                        });
-                    })
-
-        } catch(error){
-            console.log(error)
+            }).catch((error) => {
+                context.setAlertBox({
+                    open: true,
+                    error: true,
+                    msg: "Đã có lỗi xảy ra khi tải ảnh."
+                });
+            });
+        } catch (error) {
+            console.log(error);
         }
-    }
+    };
+    
     
     const editProduct = (e) => {
         e.preventDefault();
@@ -324,6 +338,7 @@ const ProductEdit = () => {
         formdata.append('discount', formFields.discount);
         formdata.append('rating', formFields.rating);
         formdata.append('isNewProduct', formFields.isNewProduct);
+        formdata.append('sold', formFields.sold);
         formdata.append("sizesAndColors", JSON.stringify(formFields.sizesAndColors));
 
         if(formFields.name===""){
@@ -689,7 +704,7 @@ const ProductEdit = () => {
                                                             isSelectdImages === true ?
                                                             <img src={`${img}`} className='w-100' />
                                                             :
-                                                            <img src={`${context.baseUrl}/upload/${img}`} className='w-100' />
+                                                            <img src={img} className='w-100' />
 
                                                         }
                                                     </div>

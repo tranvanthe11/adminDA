@@ -293,3 +293,20 @@ flex-direction: column; pointer-events: none;}
 .inputBtn Button{position: absolute; top: 9px; right: 10px; z-index: 100;}
 
 .badge{ padding: 4px; font-size: 14px; font-weight: 400;}
+
+.productModal .MuiPaper-elevation{padding: 25px; position: relative; width: 780px !important;
+    max-width: 780px !important;}
+.productModal h4{font-size: 20px !important; color: rgba(0,0,0,0.8) !important;}
+.productModal .actions button{color: #000 !important; border: 1px solid rgba(0,0,0,0.1) !important;
+    font-size: 10px !important;}
+.productModal .actions button svg{font-size: 15px !important;}  
+.close_{position: absolute !important; top: 0px; right: 0px; color: #000 !important;
+    min-width: 40px !important; width: 40px !important; height: 40px !important; border-radius: 50% !important;}
+.close_ svg{font-size: 22px;}
+.orderTable td ,.orderTable th{white-space: nowrap;}
+.orderTable .img{width: 70px; height: 50px; overflow: hidden;}
+.orderTable .img img{width: 100%; height: 100%;}
+.cursor{cursor: pointer;}
+.v-align td, .v-align th {white-space: nowrap;}
+
+.table-reponsive{overflow-x: auto;}

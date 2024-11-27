@@ -16,7 +16,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { IoCloseSharp } from "react-icons/io5";
 import { FaRegImages } from "react-icons/fa";
-import { fetchDataFromApi, postData } from '../../utils/api';
+import { fetchDataFromApi, postData, postDataImg } from '../../utils/api';
 import { MyContext } from '../../App';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
@@ -77,6 +77,7 @@ const ProductUpload = () => {
             rating:0,
             isNewProduct:null,
             sizesAndColors: [],
+            sold: 0
     });
     
     const context = useContext(MyContext);
@@ -139,7 +140,6 @@ const ProductUpload = () => {
     
     const selectCatName = (catName) => {
         const processedCatName = removeDiacriticsAndSpaces(catName);
-        console.log(processedCatName); // Kiểm tra kết quả, ví dụ: "quanjeans"
         formFields.catName=processedCatName;
     };
 
@@ -153,28 +153,6 @@ const ProductUpload = () => {
         ))
     };
 
-    // const handleChangeProductSizes = (event) => {
-    //     const {
-    //         target: {value},
-    //     } = event;
-    //     setProductSize(
-    //         typeof value === 'string' ? value.split(',') : value ,
-    //     )
-
-    //     formFields.productSize=value;
-
-    // };
-
-    // const handleChangeProductColor = (event) => {
-    //     const {
-    //         target: {value},
-    //     } = event;
-    //     setProductColor(
-    //         typeof value === 'string' ? value.split(',') : value ,
-    //     )
-
-    //     formFields.productColor=value;
-    // };
 
     const handleChangeProductSizes = (event) => {
         const { target: { value } } = event;
@@ -260,39 +238,55 @@ const ProductUpload = () => {
         ))
     }
 
-    const onChangeFile = async(e, apiEndPoint) => {
+    const onChangeFile = async (e, apiEndPoint) => {
         try {
             const imgArr = [];
             const files = e.target.files;
-            // setImgFiles(e.target.files)
-            for(var i=0; i<files.length; i++){
-                if(files[i] && (files[i].type === 'image/jpeg' || files[i].type === 'image/jpg' 
+            const formdata = new FormData();
+    
+            // Duyệt qua các file và thêm vào imgArr và formdata
+            for (let i = 0; i < files.length; i++) {
+                if (files[i] && (files[i].type === 'image/jpeg' || files[i].type === 'image/jpg' 
                     || files[i].type === 'image/png' || files[i].type === 'image/webp')) {
-                    setImgFiles(files)
-
-                    const file = files[i];
-                    imgArr.push(file);
-                    formdata.append(`images`, file)
-                    }else{
-                        context.setAlertBox({
-                            open: true,
-                            error: true,
-                            msg: "vui long them anh"
-                        });
-                    }
-
-
-                    
+                    imgArr.push(files[i]);
+                    formdata.append('images', files[i]);
                 }
-                setIsSelectdFiles(true);
-                setFiles(imgArr);
-                postData(apiEndPoint, formdata).then((res)=>{
-                })
-
-        } catch(error){
-            console.log(error)
+            }
+    
+            setImgFiles(imgArr);
+            setFiles(imgArr);
+            setIsSelectdFiles(true);
+            context.setAlertBox({
+                open: true,
+                error: false,
+                msg: "Thêm ảnh thành công"
+            });
+    
+            const res = await postDataImg(apiEndPoint, formdata);
+            console.log(res);
+            if (res && res.images) {
+                const { images } = res;
+                setFormFields({
+                    ...formFields,
+                    images: images
+                });
+            } else {
+                context.setAlertBox({
+                    open: true,
+                    error: true,
+                    msg: "Lỗi tải ảnh lên Cloudinary."
+                });
+            }
+        } catch (error) {
+            console.log(error);
+            context.setAlertBox({
+                open: true,
+                error: true,
+                msg: "Đã có lỗi xảy ra khi tải ảnh."
+            });
         }
     }
+    
     
     const addProduct = (e) => {
         e.preventDefault();
@@ -305,12 +299,10 @@ const ProductUpload = () => {
         formdata.append('category', formFields.category);
         formdata.append('brand', formFields.brand);
         formdata.append('price', formFields.price);
-        // formdata.append('countInStock', formFields.countInStock);
         formdata.append('discount', formFields.discount);
         formdata.append('rating', formFields.rating);
         formdata.append('isNewProduct', formFields.isNewProduct);
-        // formdata.append('productSize', formFields.productSize);
-        // formdata.append('productColor', formFields.productColor);
+        formdata.append('sold', formFields.sold);
         formdata.append("sizesAndColors", JSON.stringify(formFields.sizesAndColors));
 
         if(formFields.name===""){
@@ -458,7 +450,7 @@ const ProductUpload = () => {
 
                                 <div className='form-group'>
                                     <h6>Mô tả</h6>
-                                    <textarea row={5} cols={10} name='description' value={formFields.description} onChange={inputChange} />
+                                    <textarea rows={5} cols={10} name='description' value={formFields.description} onChange={inputChange} />
                                 </div>
 
                                 <div className='row'>

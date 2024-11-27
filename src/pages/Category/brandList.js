@@ -119,7 +119,7 @@ const Brand = () => {
                                                         <div className="imgWrapper">
                                                             <div className="img">
                                                                 <img className="w-100"
-                                                                src={`${context.baseUrl}/upload/${item.category.images[0]}`} />
+                                                                src={item?.category?.images[0]} />
                                                             </div>
                                                         </div>
                                                     </div>

@@ -23,6 +23,8 @@ import Brand from './pages/Category/brandList';
 import EditBrand from './pages/Category/editBrand';
 import AddProductSize from './pages/Products/addProductSize';
 import AddProductColor from './pages/Products/addProductColor';
+import Orders from './pages/Orders';
+import OrdersNew from './pages/OrdersNew';
 
 const MyContext = createContext();
 
@@ -102,7 +104,9 @@ function App() {
     }else{
       setIsLogin(false)
     }
+
   },[isLogin])
+
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -155,7 +159,7 @@ function App() {
               <Route path="/login" exact={true} element={<Login />} />
               <Route path="/signUp" exact={true} element={<SignUp />} />
               <Route path="/products" exact={true} element={<Products />} />
-              <Route path="/product/details" exact={true} element={<ProductDetails />} />
+              <Route path="/product/details/:id" exact={true} element={<ProductDetails />} />
               <Route path="/product/upload" exact={true} element={<ProductUpload />} />
               <Route path="/product/edit/:id" exact={true} element={<ProductEdit />} />
               <Route path="/category" exact={true} element={<Category />} />
@@ -166,6 +170,8 @@ function App() {
               <Route path="/category/edit/:id" exact={true} element={<CategoryEdit />} />
               <Route path="/productSize/add" exact={true} element={<AddProductSize />} />
               <Route path="/productColor/add" exact={true} element={<AddProductColor />} />
+              <Route path="/orders" exact={true} element={<Orders />} />
+              <Route path="/ordersNew" exact={true} element={<OrdersNew />} />
 
             </Routes>
           </div>

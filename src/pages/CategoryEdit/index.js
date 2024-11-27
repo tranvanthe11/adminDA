@@ -6,7 +6,7 @@ import { emphasize, styled } from '@mui/material/styles';
 import { useContext, useEffect, useState } from 'react';
 import { Button } from '@mui/material';
 import { IoMdCloudUpload } from "react-icons/io";
-import { editData, fetchDataFromApi, postData } from '../../utils/api';
+import { editData, fetchDataFromApi, postData, postDataImg } from '../../utils/api';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import { MyContext } from '../../App';
@@ -84,9 +84,11 @@ const CategoryEdit = () => {
             setFormFields({
                 name: res.name,
                 brand: res.brand,
-                color: res.color
+                color: res.color,
+                images: res.images || []
             });
-            setPreviews(res.images);
+            // setPreviews(res.images);
+            setPreviews(res.images || []); 
             context.setProgress(100);
         })
     }, [])
@@ -140,50 +142,53 @@ const CategoryEdit = () => {
     //     }
     // }
 
-    const onChangeFile = async(e, apiEndPoint) => {
+    const onChangeFile = async (e, apiEndPoint) => {
         try {
             const imgArr = [];
             const files = e.target.files;
-            // setImgFiles(e.target.files)
-            for(var i=0; i<files.length; i++){
-                if(files[i] && (files[i].type === 'image/jpeg' || files[i].type === 'image/jpg' 
-                    || files[i].type === 'image/png' || files[i].type === 'image/webp')) {
-                    setImgFiles(e.target.files)
-
+    
+            for (let i = 0; i < files.length; i++) {
+                if (files[i] && (files[i].type === 'image/jpeg' || files[i].type === 'image/jpg' || files[i].type === 'image/png' || files[i].type === 'image/webp')) {
                     const file = files[i];
                     imgArr.push(file);
-                    formdata.append(`images`, file)
-
-                    setFiles(imgArr);
-                    context.setAlertBox({
-                        open: true,
-                        error: false,
-                        msg: "Them anh thanh cong"
+                    formdata.append('images', file);  // Cập nhật ảnh mới
+                }
+            }
+    
+            setImgFiles(e.target.files);
+            setIsSelectdFiles(true);
+    
+            context.setAlertBox({
+                open: true,
+                error: false,
+                msg: "Thêm ảnh thành công"
+            });
+    
+            postDataImg(apiEndPoint, formdata).then((res) => {
+                if (res && res.images) {
+                    setFormFields({
+                        ...formFields,
+                        images: res.images  // Cập nhật URL ảnh vào formFields
                     });
-
-                    setIsSelectdFiles(true);
-
-                    postData(apiEndPoint, formdata).then((res)=>{
-                        context.setAlertBox({
-                            open: true,
-                            error: false,
-                            msg: "Them anh thanh cong"
-                        });
-                    })
-                } else{
+                } else {
                     context.setAlertBox({
                         open: true,
                         error: true,
-                        msg: "vui long them anh"
+                        msg: "Lỗi tải ảnh lên Cloudinary."
                     });
                 }
-            }
-
-        } catch(error){
-            console.log(error)
+            }).catch((error) => {
+                context.setAlertBox({
+                    open: true,
+                    error: true,
+                    msg: "Đã có lỗi xảy ra khi tải ảnh."
+                });
+            });
+        } catch (error) {
+            console.log(error);
         }
-    }
-
+    };
+    
     
     const editCategory = (e) => {
         e.preventDefault();
@@ -261,7 +266,7 @@ const CategoryEdit = () => {
                                                             isSelectdFiles === true ?
                                                             <img src={`${img}`} className='w-100' />
                                                             :
-                                                            <img src={`${context.baseUrl}/upload/${img}`} className='w-100' />
+                                                            <img src={img} className='w-100' />
 
                                                         }
                                                     </div>
