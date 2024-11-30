@@ -34,7 +34,7 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     };
   });
 
-const CategoryEdit = () => {
+const EditHomeBanner = () => {
 
     const history = useNavigate();
 
@@ -51,12 +51,9 @@ const CategoryEdit = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    // const [isSelectedImages, setIsSelectedImages] = useState(false);
     const [isSelectdFiles,setIsSelectdFiles] = useState(false);
 
     const [formFields, setFormFields] = useState({
-        name: '',
-        color: '',
         images: []
     });
 
@@ -79,12 +76,9 @@ const CategoryEdit = () => {
 
     useEffect(()=>{
         context.setProgress(30);
-        fetchDataFromApi(`/api/category/${id}`).then((res)=>{
-            setCategory(res)
+        fetchDataFromApi(`/api/homeBanner/${id}`).then((res)=>{
+            // setCategory(res)
             setFormFields({
-                name: res.name,
-                brand: res.brand,
-                color: res.color,
                 images: res.images || []
             });
             // setPreviews(res.images);
@@ -93,54 +87,6 @@ const CategoryEdit = () => {
         })
     }, [])
 
-    const changeInput = (e)=>{
-        setFormFields(()=>(
-            {
-                ...formFields,
-                [e.target.name]:e.target.value
-            }
-        ))
-    }
-
-    // const onChangeFile = async(e, apiEndPoint) => {
-    //     try {
-    //         const imgArr = [];
-    //         const files = e.target.files;
-    //         // setImgFiles(e.target.files)
-    //         for(var i=0; i<files.length; i++){
-    //             if(files[i] && (files[i].type === 'image/jpeg' || files[i].type === 'image/jpg' 
-    //                 || files[i].type === 'image/png' || files[i].type === 'image/webp')) {
-    //                 setImgFiles(e.target.files)
-
-    //                 const file = files[i];
-    //                 imgArr.push(file);
-    //                 formdata.append(`images`, file)
-
-    //                 setFiles(imgArr);
-
-
-    //                 setIsSelectedImages(true);
-
-    //                 postData(apiEndPoint, formdata).then((res)=>{
-    //                     context.setAlertBox({
-    //                         open: true,
-    //                         error: false,
-    //                         msg: "Them anh thanh cong"
-    //                     });
-    //                 })
-    //             } else{
-    //                 context.setAlertBox({
-    //                     open: true,
-    //                     error: true,
-    //                     msg: "vui long them anh"
-    //                 });
-    //             }
-    //         }
-
-    //     } catch(error){
-    //         console.log(error)
-    //     }
-    // }
 
     const onChangeFile = async (e, apiEndPoint) => {
         try {
@@ -190,22 +136,20 @@ const CategoryEdit = () => {
     };
     
     
-    const editCategory = (e) => {
+    const editHomeSlide = (e) => {
         e.preventDefault();
 
-        formdata.append('name', formFields.name);
-        formdata.append('color', formFields.color);
-
-        if(formFields.name!=="" && formFields.color!=="" && formFields.brand!==""){
+        if(previews!==0){
             setIsLoading(true);
     
-            editData(`/api/category/${id}`, formFields).then((res)=>{
+            editData(`/api/homeBanner/${id}`, formFields).then((res)=>{
                 setIsLoading(false);
                 context.setAlertBox({
                     open:true,
                     error: false,
                     msg: "Cập nhật thành công"
                 });
+                history('/homeBanner')
             })
 
         }else{
@@ -222,7 +166,7 @@ const CategoryEdit = () => {
         <>  
             <div className="right-content w-100">
                 <div className="card shadow border-0 w-100 flex-row p-4">
-                    <h5 className="mb-0">Chỉnh sửa loại sản phẩm</h5>
+                    <h5 className="mb-0">Chỉnh sửa Banner</h5>
                     <Breadcrumbs aria-label="breadcrumb" className='ml-auto breadcrumbs_'>
                         <StyledBreadcrumb
                         component="a"
@@ -233,31 +177,20 @@ const CategoryEdit = () => {
                         <StyledBreadcrumb
                         component="a" 
                         href="#"
-                        label="Loại sản phẩm"
+                        label="Banner"
                         deleteIcon={<ExpandMoreIcon />}
                         />
                         <StyledBreadcrumb 
-                        label="Chỉnh sửa loại sản phẩm"
+                        label="Chỉnh sửa Banner"
                         deleteIcon={<ExpandMoreIcon />}
                         />
                     </Breadcrumbs>
                 </div>
 
-                <form className='form' onSubmit={editCategory}>
+                <form className='form' onSubmit={editHomeSlide}>
                     <div className='row'>
                         <div className='col-sm-12'>
                             <div className='card p-4 mt-0'>
-
-                                <div className='form-group'>
-                                    <h6>Tên loại sản phẩm</h6>
-                                    <input type='text' name='name' value={formFields.name} onChange={changeInput} />
-                                </div>
-
-                                <div className='form-group'>
-                                    <h6>Màu</h6>
-                                    <input type='text' name='color' value={formFields.color} onChange={changeInput} />
-                                </div>
-
                                 <div className='imageUploadSec'>
                                     <h5 className='mb-4'>Ảnh</h5>
 
@@ -277,21 +210,10 @@ const CategoryEdit = () => {
                                                 )
                                             })
                                         }
-                                        {/* <div className='uploadBox'>
-                                            <span className='remove'><IoCloseSharp /></span>
-                                            <div className='box'>
-                                                <LazyLoadImage
-                                                alt={"image"}
-                                                effect="blur"
-                                                className="w-100"
-                                                src={'https://mironcoder-hotash.netlify.app/images/product/single/01.webp'}
-                                                />
-                                            </div>
-                                        </div> */}
 
                                         <div className='uploadBox'>
                                             <input type='file' name='images' 
-                                            onChange={(e)=>onChangeFile(e, '/api/category/upload')}/>
+                                            onChange={(e)=>onChangeFile(e, '/api/homeBanner/upload')}/>
                                             <div className='info'>
                                                 <FaRegImages />
                                                 <h5>Tải ảnh</h5>
@@ -319,4 +241,4 @@ const CategoryEdit = () => {
     )
 }
 
-export default CategoryEdit;
+export default EditHomeBanner;

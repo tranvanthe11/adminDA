@@ -29,10 +29,18 @@ const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 const Dashboard = () => {
 
     const context = useContext(MyContext);
+    const [showby, setShowby] = useState('');
+    const [catby, setCatby] = useState('');
+    const [productList, setProductList] = useState([]);
+    const [userList, setUserList] = useState([]);
 
     useEffect(()=>{
         context.setIsHideSidebarAndHeader(false);
         context.setProgress(30)
+
+        fetchDataFromApi('/api/user').then((res)=>{
+            setUserList(res);
+        })
 
         fetchDataFromApi('/api/products').then((res)=>{
             setProductList(res);
@@ -63,19 +71,80 @@ const Dashboard = () => {
         })
     }
 
-    const [showby, setShowby] = useState('');
-    const [catby, setCatby] = useState('');
-    const [productList, setProductList] = useState([]);
     return(
         <>
             <div className="right-content w-100">
                 <div className="row dashboardBoxWrapperRow">
                     <div className="col-md-8">
                         <div className="dashboardBoxWrapper d-flex">
-                            <DashboardBox color={["#1da256", "#48d483"]} icon={<FaUserCircle />} />
+                            <div className="dashboardBox" style={{
+                                backgroundImage: `linear-gradient(to right, #1da256, #48d483)`
+                            }}>
+                                <div className="d-flex w-100">
+                                    <div className="col1">
+                                        <h4 className="text-white mb-0">Tổng người dùng</h4>
+                                        <span className="text-white">{userList?.length}</span>
+                                    </div>
+
+                                    <div className="ml-auto">
+                                            <span className="icon">
+                                            <FaUserCircle />
+                                            </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="dashboardBox" style={{
+                                backgroundImage: `linear-gradient(to right, #2c78e5, #60aff5)`
+                            }}>
+                                <div className="d-flex w-100">
+                                    <div className="col1">
+                                        <h4 className="text-white mb-0">Tổng đơn hàng</h4>
+                                        <span className="text-white">200</span>
+                                    </div>
+
+                                    <div className="ml-auto">
+                                            <span className="icon">
+                                            <FaShoppingCart />
+                                            </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="dashboardBox" style={{
+                                backgroundImage: `linear-gradient(to right, #c012e2, #eb64fe)`
+                            }}>
+                                <div className="d-flex w-100">
+                                    <div className="col1">
+                                        <h4 className="text-white mb-0">Tổng sản phẩm</h4>
+                                        <span className="text-white">{productList?.products?.length}</span>
+                                    </div>
+
+                                    <div className="ml-auto">
+                                            <span className="icon">
+                                            <FaBagShopping />
+                                            </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="dashboardBox" style={{
+                                backgroundImage: `linear-gradient(to right, #e1950e, #f3cd29)`
+                            }}>
+                                <div className="d-flex w-100">
+                                    <div className="col1">
+                                        <h4 className="text-white mb-0">Tổng đánh giá</h4>
+                                        <span className="text-white">200</span>
+                                    </div>
+
+                                    <div className="ml-auto">
+                                            <span className="icon">
+                                            <MdRateReview />
+                                            </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {/* <DashboardBox color={["#1da256", "#48d483"]} icon={<FaUserCircle />} />
                             <DashboardBox color={["#2c78e5", "#60aff5"]} icon={<FaShoppingCart />} />
                             <DashboardBox color={["#c012e2", "#eb64fe"]} icon={<FaBagShopping />} />
-                            <DashboardBox color={["#e1950e", "#f3cd29"]} icon={<MdRateReview />} />
+                            <DashboardBox color={["#e1950e", "#f3cd29"]} icon={<MdRateReview />} /> */}
 
                         </div>
                     </div>

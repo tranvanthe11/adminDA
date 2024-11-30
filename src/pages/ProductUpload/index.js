@@ -391,10 +391,8 @@ const ProductUpload = () => {
                 error: false
             })
             setIsLoading(false);
-            // setPreviews([]); 
             setImgFiles(null); 
-            // setFiles([]);      
-            // setIsSelectdFiles(false)
+
 
             history('/products')
         })
@@ -441,7 +439,6 @@ const ProductUpload = () => {
                     <div className='row'>
                         <div className='col-md-12'>
                             <div className='card p-4 mt-0'>
-                                {/* <h5 className='mb-4'>Basic information</h5> */}
 
                                 <div className='form-group'>
                                     <h6>Tên sản phẩm</h6>
@@ -527,13 +524,6 @@ const ProductUpload = () => {
                                         </div>
                                     </div>
 
-
-                                    {/* <div className='col'>
-                                        <div className='form-group'>
-                                            <h6>Số lượng</h6>
-                                            <input type='text' name='countInStock' value={formFields.countInStock} onChange={inputChange} />
-                                        </div>
-                                    </div> */}
                                 </div>
 
                                 <div className='row'>

@@ -87,6 +87,20 @@ const Products = () => {
         })
     }
 
+    const handleChangeCat = (event) => {
+        setCatby(event.target.value);
+        if(event.target.value!==""){
+            fetchDataFromApi(`/api/products?catId=${event.target.value}`).then((res)=>{
+                setProductList(res)
+            })
+
+        }else{
+            fetchDataFromApi('/api/products').then((res)=>{
+                setProductList(res);
+            })
+        }
+    };
+
     return(
         <>
             <div className="right-content w-100">
@@ -150,7 +164,7 @@ const Products = () => {
                             <FormControl size="small" className="w-100">
                                 <Select
                                 value={catby}
-                                onChange={(e)=>setCatby(e.target.value)}
+                                onChange={handleChangeCat}
                                 displayEmpty
                                 inputProps={{ 'aria-label': 'Without label' }}
                                 labelId="demo-select-small-label"

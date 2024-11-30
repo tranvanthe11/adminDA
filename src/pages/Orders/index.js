@@ -131,7 +131,7 @@ const Orders = () => {
                                             <td>
                                                 <span className='text-red font-weight-bold cursor'
                                                 onClick={()=>showProducts(order?._id)}
-                                                >Click here to view</span>
+                                                >Nhấn để xem</span>
                                             </td>
                                             <td>{order?.name}</td>
                                             <td>{order?.phone}</td>
@@ -177,18 +177,18 @@ const Orders = () => {
         </div>
                 <Dialog open={isOpenModal} className='productModal' >
                     <Button className="close_" onClick={()=>setIsOpenModal(false)}><IoClose /></Button>
-                    <h4 className='mb-1 font-weight-bold mb-3'>Products</h4>
+                    <h4 className='mb-1 font-weight-bold mb-3'>Sản phẩm</h4>
 
                     <div className='table-responsive orderTable'>
                         <table className='table table-striped table-bordered'>
                             <thead className='thead-light'>
                                 <tr>
-                                    <th>ProductId</th>
-                                    <th>ProductTitle</th>
-                                    <th>Images</th>
-                                    <th>Quantity</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Ảnh</th>
+                                    <th>Số lượng</th>
                                     <th>Size, Màu</th>
-                                    <th>subTotal</th>
+                                    <th>Tổng giá</th>
+                                    <th>Product Id</th>
                                 </tr>
                             </thead>
 
@@ -197,7 +197,6 @@ const Orders = () => {
                                     products?.length!==0 && products?.map((product, index)=>{
                                         return(
                                             <tr key={index}>
-                                                <td>{product?.productId}</td>
                                                 <td>{product?.productTitle}</td>
                                                 <td>
                                                     <div className='img'>
@@ -209,6 +208,7 @@ const Orders = () => {
                                                 <td>
                                                 {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product?.subTotal)}
                                                 </td>
+                                                <td>{product?.productId}</td>
                                             </tr>
                                         )
                                     })

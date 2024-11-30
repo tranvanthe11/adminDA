@@ -38,37 +38,36 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     };
   });
 
-const Category = () => {
+const HomeBanner = () => {
 
-    const [catData, setCatData] = useState([]);
+    const [slideList, setSlideList] = useState([]);
+    const [open, setOpen] = useState(false);
+
+    const [isLoading, setIsLoading] = useState(false);
+
 
     const context = useContext(MyContext);
+
+
 
     useEffect(()=>{
         window.scrollTo(0,0);
 
         context.setProgress(30)
 
-        fetchDataFromApi('/api/category').then((res)=>{
-            setCatData(res);
+        fetchDataFromApi('/api/homeBanner').then((res)=>{
+            setSlideList(res);
             context.setProgress(100)
         })
     }, []);
+
     
 
-    const deleteCat=(id)=>{
-        deleteData(`/api/category/${id}`).then((res)=>{
-            fetchDataFromApi('/api/category').then((res)=>{
-                setCatData(res);
+    const deleteSlide=(id)=>{
+        deleteData(`/api/homeBanner/${id}`).then((res)=>{
+            fetchDataFromApi('/api/homeBanner').then((res)=>{
+                setSlideList(res);
             })
-        })
-    }
-
-    const handleChange = (event, value) => {
-        context.setProgress(30)
-        fetchDataFromApi(`/api/category?page=${value}`).then((res)=>{
-            setCatData(res);
-            context.setProgress(100)
         })
     }
 
@@ -76,7 +75,7 @@ const Category = () => {
         <>
             <div className="right-content w-100">
                 <div className="card shadow border-0 w-100 flex-row p-4">
-                    <h5 className="mb-0">Danh sách loại sản phẩm</h5>
+                    <h5 className="mb-0">Danh sách Banner</h5>
 
                     <div className='ml-auto d-flex align-items-center'>
 
@@ -88,13 +87,13 @@ const Category = () => {
                             icon={<HomeIcon fontSize="small" />}
                             />
                             <StyledBreadcrumb 
-                            label="Loại sản phẩm"
+                            label="Banner"
                             deleteIcon={<ExpandMoreIcon />}
                             />
                         </Breadcrumbs>
 
-                        <Link to="/category/add">
-                            <Button className='btn-blue ml-3 pl-3 pr-3'>Thêm loại sản phẩm</Button>
+                        <Link to="/homeBanner/add">
+                            <Button className='btn-blue ml-3 pl-3 pr-3'>Thêm Banner</Button>
                         </Link>
 
                     </div>
@@ -106,22 +105,19 @@ const Category = () => {
                         <table className="table table-bordered v-align">
                             <thead className="thead-dark">
                                 <tr>
-                                    <th style={{width: '300px'}}>Loại sản phẩm</th>
-                                    <th>Ảnh</th>
-                                    <th>Màu</th>
+                                    <th style={{width: '800px'}}>Banner</th>
                                     <th>Hành động</th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 {
-                                    catData?.categoryList?.length!==0 && catData?.categoryList?.map((item, index)=>{
+                                    slideList?.length!==0 && slideList?.map((item, index)=>{
                                         return(
                                             <tr>
-                                                <td>{item.name}</td>
                                                 <td>
                                                     <div className="d-flex align-items-center productBox">
-                                                        <div className="imgWrapper">
+                                                        <div className="imgWrapper" style={{width: '500px', flex: '0 0 500px'}}>
                                                             <div className="img">
                                                                 <img className="w-100"
                                                                 src={item.images} />
@@ -129,13 +125,12 @@ const Category = () => {
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>{item.color}</td>
                                                 <td>
                                                     <div className="actions d-flex align-items-center">
-                                                        <Link to={`/category/edit/${item.id}`} >
+                                                        <Link to={`/homeBanner/edit/${item.id}`} >
                                                             <Button className='success' ><FaPencilAlt /></Button>
                                                         </Link>
-                                                        <Button className='error' color="error" onClick={()=>deleteCat(item.id)}><MdDelete /></Button>
+                                                        <Button className='error' color="error" onClick={()=>deleteSlide(item.id)}><MdDelete /></Button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -148,13 +143,6 @@ const Category = () => {
                             </tbody>
 
                         </table>
-                        {
-                            catData?.totalPages>1 &&
-                            <div className="d-flex tableFooter">
-                                <Pagination count={catData?.totalPages} color="primary" className="pagination"
-                                showFirstButton showLastButton onChange={handleChange}/>
-                            </div>
-                        }
 
                     </div>
                 </div>
@@ -164,4 +152,4 @@ const Category = () => {
     )
 }
 
-export default Category;
+export default HomeBanner;

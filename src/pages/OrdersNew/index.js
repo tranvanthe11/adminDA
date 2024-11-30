@@ -131,7 +131,7 @@ const OrdersNew = () => {
                                             <td>
                                                 <span className='text-red font-weight-bold cursor'
                                                 onClick={()=>showProducts(order?._id)}
-                                                >Click here to view</span>
+                                                >Nhấn để xem</span>
                                             </td>
                                             <td>{order?.name}</td>
                                             <td>{order?.phone}</td>
@@ -165,12 +165,12 @@ const OrdersNew = () => {
                         <table className='table table-striped table-bordered'>
                             <thead className='thead-light'>
                                 <tr>
-                                    <th>ProductId</th>
-                                    <th>ProductTitle</th>
-                                    <th>Images</th>
-                                    <th>Quantity</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Ảnh</th>
+                                    <th>Số lượng</th>
                                     <th>Size, Màu</th>
-                                    <th>subTotal</th>
+                                    <th>Tổng giá</th>
+                                    <th>ProductId</th>
                                 </tr>
                             </thead>
 
@@ -179,7 +179,6 @@ const OrdersNew = () => {
                                     products?.length!==0 && products?.map((product, index)=>{
                                         return(
                                             <tr key={index}>
-                                                <td>{product?.productId}</td>
                                                 <td>{product?.productTitle}</td>
                                                 <td>
                                                     <div className='img'>
@@ -191,6 +190,7 @@ const OrdersNew = () => {
                                                 <td>
                                                 {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product?.subTotal)}
                                                 </td>
+                                                <td>{product?.productId}</td>
                                             </tr>
                                         )
                                     })
