@@ -29,6 +29,7 @@ import AddHomeBanner from './pages/HomeBanner/addHomeBanner';
 import HomeBanner from './pages/HomeBanner/index';
 import EditHomeBanner from './pages/HomeBanner/editHomeBanner';
 import UserList from './pages/UserList';
+import Warehouse from './pages/Warehouse';
 
 const MyContext = createContext();
 
@@ -180,6 +181,7 @@ function App() {
               <Route path="/homeBanner/edit/:id" exact={true} element={<EditHomeBanner />} />
               <Route path="/homeBanner" exact={true} element={<HomeBanner />} />
               <Route path="/userList" exact={true} element={<UserList />} />
+              <Route path="/warehouse" exact={true} element={<Warehouse />} />
 
             </Routes>
           </div>

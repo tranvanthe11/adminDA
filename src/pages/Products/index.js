@@ -192,9 +192,7 @@ const Products = () => {
                                     <th>Sản phẩm</th>
                                     <th>Loại sản phẩm</th>
                                     <th>Thương hiệu</th>
-                                    {/* <th>Thương hiệu</th> */}
                                     <th>Giá</th>
-                                    {/* <th>Sao</th> */}
                                     <th>Size</th>
                                     <th>Color</th>
                                     <th>Hành động</th>
@@ -206,11 +204,6 @@ const Products = () => {
                                     productList?.products?.length!==0 && productList?.products?.map((item,index)=>{
                                         return(
                                             <tr>
-                                            {/* <td>
-                                                <div className="d-flex align-items-center">
-                                                <Checkbox {...label} /><span>1</span>
-                                                </div>
-                                            </td> */}
                                             <td>
                                                 <div className="d-flex align-items-center productBox">
                                                     <div className="imgWrapper">

@@ -1,38 +1,82 @@
-import DashboardBox from "./components/dashboardBox";
 import { FaUserCircle } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaBagShopping } from "react-icons/fa6";
-import { MdRateReview } from "react-icons/md";
-
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useContext, useEffect, useState } from "react";
-import { Button, Rating } from "@mui/material";
-import { FaEye } from "react-icons/fa";
-import { FaPencilAlt } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
-
-import Pagination from '@mui/material/Pagination';
 import { MyContext } from "../../App";
-import Checkbox from '@mui/material/Checkbox';
 import { fetchDataFromApi } from "../../utils/api";
-import { Link } from 'react-router-dom';
-import { deleteData } from '../../utils/api';
+import { Bar } from "react-chartjs-2";
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+} from "chart.js";
 
-const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 
 const Dashboard = () => {
 
     const context = useContext(MyContext);
-    const [showby, setShowby] = useState('');
-    const [catby, setCatby] = useState('');
     const [productList, setProductList] = useState([]);
     const [userList, setUserList] = useState([]);
+    const [orderList, setOrderList] = useState([]);
+    const [columnChartData, setColumnChartData] = useState(null);
+    const [years, setYears] = useState([]); 
+    const [selectedYear, setSelectedYear] = useState(""); 
+    const [totalStock, setTotalStock] = useState(0);
+    const [totalSold, setTotalSold] = useState(0);
+
+    const fetchChartData = async (year) => {
+        try {
+            const data = await fetchDataFromApi(`/api/revenue-and-profit?year=${year}`);
+    
+            const labels = data.map(item => item.month); 
+            const revenues = data.map(item => item.revenue); 
+            const profits = data.map(item => item.profit); 
+    
+            setColumnChartData({
+                labels,
+                datasets: [
+                    {
+                        label: "Doanh thu",
+                        data: revenues,
+                        backgroundColor: "rgba(75, 192, 192, 0.6)",
+                    },
+                    {
+                        label: "Lợi nhuận",
+                        data: profits,
+                        backgroundColor: "rgba(255, 99, 132, 0.6)",
+                    },
+                ],
+            });
+        } catch (error) {
+            console.error("Lỗi khi lấy dữ liệu biểu đồ:", error);
+        }
+    };
+
+    useEffect(() => {
+        const currentYear = new Date().getFullYear();
+        const allYears = Array.from({ length: 10 }, (_, i) => (currentYear - i).toString());
+        setYears(allYears);
+        setSelectedYear(currentYear.toString());
+        fetchChartData(currentYear.toString());
+    }, []);
+    
+    useEffect(() => {
+        if (selectedYear) {
+            fetchChartData(selectedYear);
+        }
+    }, [selectedYear]);
+
+    const handleYearChange = (e) => {
+        const year = e.target.value;
+        setSelectedYear(year);
+    };
+
 
     useEffect(()=>{
         context.setIsHideSidebarAndHeader(false);
@@ -42,41 +86,42 @@ const Dashboard = () => {
             setUserList(res);
         })
 
+        fetchDataFromApi('/api/orders').then((res)=>{
+            setOrderList(res.ordersList);
+        })
+
         fetchDataFromApi('/api/products').then((res)=>{
+            const products = res.products || [];
+                
+            let stock = 0;
+                let sold = 0;
+
+                products.forEach((product) => {
+                    // Tổng tồn kho cho sản phẩm
+                    const productStock = product.sizesAndColors.reduce(
+                        (sum, item) => sum + item.countInStock,
+                        0
+                    );
+                    stock += productStock;
+
+                    // Tổng đã bán
+                    sold += product.sold || 0; // `sold` mặc định là 0 nếu không tồn tại
+                });
+
+            setTotalStock(stock);
+            setTotalSold(sold);
             setProductList(res);
             context.setProgress(100)
         })
     }, [])
 
-    const deleteProduct = (id) => {
-        context.setProgress(30);
-        deleteData(`/api/products/${id}`).then((res)=>{
-            context.setProgress(100);
-            context.setAlertBox({
-                open: true,
-                msg: "Xóa sản phẩm thành công",
-                error: true
-            })
-            fetchDataFromApi('/api/products').then((res)=>{
-                setProductList(res);
-            })
-        })
-    }
-
-    const handleChange = (event, value) => {
-        context.setProgress(30)
-        fetchDataFromApi(`/api/products?page=${value}`).then((res)=>{
-            setProductList(res);
-            context.setProgress(100)
-        })
-    }
 
     return(
         <>
             <div className="right-content w-100">
                 <div className="row dashboardBoxWrapperRow">
-                    <div className="col-md-8">
-                        <div className="dashboardBoxWrapper d-flex">
+                    <div className="col-md-12">
+                        <div className="dashboardBoxWrapper d-flex ">
                             <div className="dashboardBox" style={{
                                 backgroundImage: `linear-gradient(to right, #1da256, #48d483)`
                             }}>
@@ -99,7 +144,7 @@ const Dashboard = () => {
                                 <div className="d-flex w-100">
                                     <div className="col1">
                                         <h4 className="text-white mb-0">Tổng đơn hàng</h4>
-                                        <span className="text-white">200</span>
+                                        <span className="text-white">{orderList?.length}</span>
                                     </div>
 
                                     <div className="ml-auto">
@@ -125,167 +170,77 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             </div>
+
                             <div className="dashboardBox" style={{
-                                backgroundImage: `linear-gradient(to right, #e1950e, #f3cd29)`
+                                backgroundImage: `linear-gradient(to right, #c012e2, #eb64fe)`
                             }}>
                                 <div className="d-flex w-100">
                                     <div className="col1">
-                                        <h4 className="text-white mb-0">Tổng đánh giá</h4>
-                                        <span className="text-white">200</span>
+                                        <h4 className="text-white mb-0">Số lượng đã bán</h4>
+                                        <span className="text-white">{totalSold}</span>
                                     </div>
 
                                     <div className="ml-auto">
                                             <span className="icon">
-                                            <MdRateReview />
+                                            <FaBagShopping />
                                             </span>
                                     </div>
                                 </div>
                             </div>
-                            {/* <DashboardBox color={["#1da256", "#48d483"]} icon={<FaUserCircle />} />
-                            <DashboardBox color={["#2c78e5", "#60aff5"]} icon={<FaShoppingCart />} />
-                            <DashboardBox color={["#c012e2", "#eb64fe"]} icon={<FaBagShopping />} />
-                            <DashboardBox color={["#e1950e", "#f3cd29"]} icon={<MdRateReview />} /> */}
+
+                            <div className="dashboardBox" style={{
+                                backgroundImage: `linear-gradient(to right, #c012e2, #eb64fe)`
+                            }}>
+                                <div className="d-flex w-100">
+                                    <div className="col1">
+                                        <h4 className="text-white mb-0">Số lượng tồn kho</h4>
+                                        <span className="text-white">{totalStock}</span>
+                                    </div>
+
+                                    <div className="ml-auto">
+                                            <span className="icon">
+                                            <FaBagShopping />
+                                            </span>
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
 
-                    <div className="col-md-4 pl-0">
-                        <div className="box graphBox">
-                            
+                    <div className="col-md-12 pl-0 mt-4">
+                        <div style={{ maxWidth: "90%", margin: "auto", paddingTop: "20px" }}>
+                            {columnChartData ? (
+                                <Bar
+                                    data={columnChartData}
+                                    options={{
+                                        indexAxis: "x",
+                                        plugins: {
+                                            legend: { position: "right", display: false },
+                                        },
+                                        scales: {
+                                            x: { stacked: false },
+                                            y: { stacked: false },
+                                        },
+                                    }}
+                                />
+                            ) : (
+                                <p style={{ textAlign: "center" }}>Đang tải dữ liệu...</p>
+                            )}
+                            <select
+                                style={{ display: "block", margin: "auto", marginTop: "8px" }}
+                                value={selectedYear}
+                                onChange={handleYearChange}
+                            >
+                                {years.map((year) => (
+                                    <option key={year} value={year}>
+                                        {year}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
                 </div>
-
-
-                {/* <div className="card shadow border-0 p-3">
-                    <h3 className="hd">Sản phẩm</h3>
-
-                    <div className="row cardFilters mt-2">
-                        <div className="col-md-3">
-                            <h4>Show</h4>
-                            <FormControl size="small" className="w-100">
-                                <Select
-                                value={showby}
-                                onChange={(e)=>setShowby(e.target.value)}
-                                displayEmpty
-                                inputProps={{ 'aria-label': 'Without label' }}
-                                labelId="demo-select-small-label"
-                                className="w-100"
-                                >
-                                <MenuItem value="">
-                                    <em value={null}>None</em>
-                                </MenuItem>
-                                {
-                                    context.catData?.categoryList?.length!==0 && context.catData?.categoryList?.map((cat,index)=>{
-                                        return(
-                                            <MenuItem className='text-capitalize' value={cat.id} key={index}>{cat.name}</MenuItem>
-                                        )
-                                    })
-                                }
-                                </Select>
-                            </FormControl>
-                        </div>
-
-                        <div className="col-md-3">
-                            <h4>Loại sản phẩm</h4>
-
-                            <FormControl size="small" className="w-100">
-                                <Select
-                                value={catby}
-                                onChange={(e)=>setCatby(e.target.value)}
-                                displayEmpty
-                                inputProps={{ 'aria-label': 'Without label' }}
-                                labelId="demo-select-small-label"
-                                className="w-100"
-                                >
-                                <MenuItem value="">
-                                    <em value={null}>None</em>
-                                </MenuItem>
-                                {
-                                    context.catData?.categoryList?.length!==0 && context.catData?.categoryList?.map((cat,index)=>{
-                                        return(
-                                            <MenuItem className='text-capitalize' value={cat.id} key={index}>{cat.name}</MenuItem>
-                                        )
-                                    })
-                                }
-                                </Select>
-                            </FormControl>
-                        </div>
-                    </div>
-
-                    <div className="table-reponsive mt-3">
-                        <table className="table table-bordered v-align">
-                            <thead className="thead-dark">
-                                <tr>
-                                    <th>Sản phẩm</th>
-                                    <th>Loại sản phẩm</th>
-                                    <th>Thương hiệu</th>
-                                    <th>Giá</th>
-                                    <th>Sao</th>
-                                    <th>Trong kho</th>
-                                    <th>Hành động</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {
-                                    productList?.products?.length!==0 && productList?.products?.map((item,index)=>{
-                                        return(
-                                            <tr>
-
-                                            <td>
-                                                <div className="d-flex align-items-center productBox">
-                                                    <div className="imgWrapper">
-                                                        <div className="img">
-                                                            <img className="w-100" 
-                                                            src={`${context.baseUrl}/upload/${item.images[0]}`} />
-                                                        </div>
-                                                    </div>
-                                                    <div className="info pl-1">
-                                                        <h6>{item.name}</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>{item.category.name}</td>
-                                            <td>{item.brand.brand}</td>
-                                            <td>
-                                                <del className="old">{item.oldPrice}</del>
-                                                <span className="new text-danger">{item.price}</span>
-                                            </td>
-                                            <td><Rating name='read-only' defaultValue={item.rating} precision={0.5} size='small' readOnly /></td>
-                                            <td>{item.countInStock}</td>
-                                            <td>
-                                                <div className="actions d-flex align-items-center">
-                                                    <Link to="/product/details">
-                                                        <Button><FaEye /></Button>
-                                                    </Link>
-                                                    <Link to={`/product/edit/${item.id}`}>
-                                                        <Button><FaPencilAlt /></Button>
-                                                    </Link>
-                                                    <Button color="error"
-                                                    onClick={()=>deleteProduct(item.id)}><MdDelete /></Button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        )
-                                    })
-                                }
-
-                            </tbody>
-
-                        </table>
-
-                        {
-
-                            productList?.totalPages > 1 &&
-                            <div className="d-flex tableFooter">
-                                <Pagination count={productList?.totalPages} color="primary" className="pagination"
-                                showFirstButton showLastButton onChange={handleChange}/>
-                            </div>
-                        }
-
-                    </div>
-                </div> */}
             </div>
         </>
     )

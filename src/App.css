@@ -126,7 +126,7 @@ border-radius: 100%; position: absolute; top: -30px; right: -20px; opacity: 0.5;
 .right-content{padding: 100px 30px; padding-bottom: 10px;}
 
 .dashboardBoxWrapper{gap: 20px; width: 100%; flex-wrap: wrap;}
-.dashboardBoxWrapper .dashboardBox{width: 47%; height: 170px; border-radius: 10px; overflow: hidden;
+.dashboardBoxWrapper .dashboardBox{width: 30%; height: 170px; border-radius: 10px; overflow: hidden;
 padding: 20px;}
 
 .dashboardBoxWrapper .dashboardBox .col1 h4{font-size: 20px; font-weight: 600;}
@@ -161,6 +161,7 @@ table td .info h6{overflow: hidden; text-overflow: ellipsis; white-space: nowrap
 font-weight: 600; margin: 0px;}
 
 table.v-align td .productBox{width: 270px;}
+table.v-align td .productBox.warehouse{width: 275px;}
 table.v-align td .productBox .info{width: 100%;}
 
 
@@ -310,3 +311,9 @@ flex-direction: column; pointer-events: none;}
 .v-align td, .v-align th {white-space: nowrap;}
 
 .table-reponsive{overflow-x: auto;}
+
+.low-stock {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+}

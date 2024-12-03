@@ -11,8 +11,7 @@ import { MyContext } from "../../App";
 import { BiSolidCategory } from "react-icons/bi";
 import { useNavigate } from 'react-router-dom';
 import { PiFlagBannerFill } from "react-icons/pi";
-
-
+import { MdWarehouse } from "react-icons/md";
 
 const Sidebar = () => {
   const history = useNavigate()
@@ -144,6 +143,24 @@ const Sidebar = () => {
                                 <li>
                                     <Link to="/homeBanner/add">Thêm Banner</Link>
                                 </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <Button className={`w-100 ${activeTab===6 && isToggleSubmenu===true ? 'active' : ''}`}
+                        onClick={()=>isOpenSubmenu(6)}>
+                            <span className='icon'><MdWarehouse  /></span>
+                            Quản lý kho
+                            <span className='arrow'><FaAngleRight /></span>
+                        </Button>
+                        <div className={`submenuWrapper ${activeTab===6 && isToggleSubmenu===true ? 'colapse' : 'colapsed'}`}>
+                            <ul className='submenu'>
+                                <li>
+                                    <Link to="/warehouse">Tồn kho</Link>
+                                </li>
+                                {/* <li>
+                                    <Link to="/homeBanner/add">Thêm Banner</Link>
+                                </li> */}
                             </ul>
                         </div>
                     </li>

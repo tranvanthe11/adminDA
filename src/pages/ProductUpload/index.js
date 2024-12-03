@@ -68,7 +68,8 @@ const ProductUpload = () => {
             name:'',
             description:'',
             price:null,
-            discount:0,
+            oldPrice:null,
+            costPrice:null,
             catName:'',
             catId:'',
             brandName:'',
@@ -190,12 +191,12 @@ const ProductUpload = () => {
             ...prev,
             productColor: selectedColors,
             sizesAndColors: [
-                ...(prev.sizesAndColors || []), // Đảm bảo `sizesAndColors` là mảng
+                ...(prev.sizesAndColors || []), 
                 ...productSize?.flatMap((size) =>
                     selectedColors?.map((color) => ({
                         size,
                         color,
-                        countInStock: 0, // Mặc định
+                        countInStock: 0,
                     }))
                 ).filter(
                     (item) =>
@@ -299,7 +300,8 @@ const ProductUpload = () => {
         formdata.append('category', formFields.category);
         formdata.append('brand', formFields.brand);
         formdata.append('price', formFields.price);
-        formdata.append('discount', formFields.discount);
+        formdata.append('oldPrice', formFields.oldPrice);
+        formdata.append('costPrice', formFields.costPrice);
         formdata.append('rating', formFields.rating);
         formdata.append('isNewProduct', formFields.isNewProduct);
         formdata.append('sold', formFields.sold);
@@ -346,10 +348,18 @@ const ProductUpload = () => {
             return false;
         }
 
-        if(formFields.discount===null){
+        if(formFields.oldPrice===null){
             context.setAlertBox({
                 open: true,
-                msg: "Vui lòng thêm discount",
+                msg: "Vui lòng thêm giá cũ",
+                error: true
+            })
+            return false;
+        }
+        if(formFields.costPrice===null){
+            context.setAlertBox({
+                open: true,
+                msg: "Vui lòng thêm giá nhập",
                 error: true
             })
             return false;
@@ -512,15 +522,22 @@ const ProductUpload = () => {
 
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>Giá</h6>
+                                            <h6>Giá mới</h6>
                                             <input type='text' name='price' value={formFields.price} onChange={inputChange} />
                                         </div>
                                     </div>
 
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>Giảm giá</h6>
-                                            <input type='text' name='discount' value={formFields.discount} onChange={inputChange} />
+                                            <h6>Giảm cũ</h6>
+                                            <input type='text' name='oldPrice' value={formFields.oldPrice} onChange={inputChange} />
+                                        </div>
+                                    </div>
+
+                                    <div className='col'>
+                                        <div className='form-group'>
+                                            <h6>Giá nhập</h6>
+                                            <input type='text' name='costPrice' value={formFields.costPrice} onChange={inputChange} />
                                         </div>
                                     </div>
 

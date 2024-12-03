@@ -65,7 +65,8 @@ const ProductEdit = () => {
             name:'',
             description:'',
             price:null,
-            discount:null,
+            oldPrice:null,
+            costPrice:null,
             catName:'',
             catId:'',
             brandName:'',
@@ -107,7 +108,8 @@ const ProductEdit = () => {
                 name:res.name,
                 description:res.description,
                 price:res.price,
-                discount:res.discount,
+                oldPrice:res.oldPrice,
+                costPrice:res.costPrice,
                 catName:res.catName,
                 catId:res.catId,
                 brandName:res.brandName,
@@ -335,7 +337,8 @@ const ProductEdit = () => {
         formdata.append('category', formFields.category);
         formdata.append('brand', formFields.brand);
         formdata.append('price', formFields.price);
-        formdata.append('discount', formFields.discount);
+        formdata.append('oldPrice', formFields.oldPrice);
+        formdata.append('costPrice', formFields.costPrice);
         formdata.append('rating', formFields.rating);
         formdata.append('isNewProduct', formFields.isNewProduct);
         formdata.append('sold', formFields.sold);
@@ -381,10 +384,18 @@ const ProductEdit = () => {
             })
             return false;
         }
-        if(formFields.discount===null){
+        if(formFields.oldPrice===null){
             context.setAlertBox({
                 open: true,
-                msg: "Vui lòng thêm discount",
+                msg: "Vui lòng thêm giá cũ",
+                error: true
+            })
+            return false;
+        }
+        if(formFields.costPrice===null){
+            context.setAlertBox({
+                open: true,
+                msg: "Vui lòng thêm giá nhập",
                 error: true
             })
             return false;
@@ -544,15 +555,21 @@ const ProductEdit = () => {
 
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>Giá</h6>
+                                            <h6>Giá mới</h6>
                                             <input type='text' name='price' value={formFields.price} onChange={inputChange} />
                                         </div>
                                     </div>
 
                                     <div className='col'>
                                         <div className='form-group'>
-                                            <h6>Giảm giá</h6>
-                                            <input type='text' name='discount' value={formFields.discount} onChange={inputChange} />
+                                            <h6>Giá cũ</h6>
+                                            <input type='text' name='oldPrice' value={formFields.oldPrice} onChange={inputChange} />
+                                        </div>
+                                    </div>
+                                    <div className='col'>
+                                        <div className='form-group'>
+                                            <h6>Giá nhập</h6>
+                                            <input type='text' name='costPrice' value={formFields.costPrice} onChange={inputChange} />
                                         </div>
                                     </div>
 
