@@ -33,7 +33,7 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     };
   });
 
-const AddHomeBanner = () => {
+const AddLeftBanner = () => {
 
     const history = useNavigate();
 
@@ -133,9 +133,9 @@ const AddHomeBanner = () => {
         if( isSelectdFiles!==false){
             setIsLoading(true);
     
-            postData('/api/homeBanner/create', formFields).then((res)=>{
+            postData('/api/leftBanner/create', formFields).then((res)=>{
                 setIsLoading(false);
-                history('/homeBanner')
+                history('/leftBanner')
             })
 
         }else{
@@ -163,7 +163,7 @@ const AddHomeBanner = () => {
                         <StyledBreadcrumb
                         component="a" 
                         href="#"
-                        label="Banner"
+                        label="Banner bên trái"
                         deleteIcon={<ExpandMoreIcon />}
                         />
                         <StyledBreadcrumb 
@@ -194,7 +194,7 @@ const AddHomeBanner = () => {
 
                                         <div className='uploadBox'>
                                             <input type='file' name='images' 
-                                            onChange={(e)=>onChangeFile(e, '/api/homeBanner/upload')}/>
+                                            onChange={(e)=>onChangeFile(e, '/api/leftBanner/upload')}/>
                                             <div className='info'>
                                                 <FaRegImages />
                                                 <h5>Tải ảnh</h5>
@@ -222,4 +222,4 @@ const AddHomeBanner = () => {
     )
 }
 
-export default AddHomeBanner;
+export default AddLeftBanner;

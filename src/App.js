@@ -30,6 +30,9 @@ import HomeBanner from './pages/HomeBanner/index';
 import EditHomeBanner from './pages/HomeBanner/editHomeBanner';
 import UserList from './pages/UserList';
 import Warehouse from './pages/Warehouse';
+import EditLeftBanner from './pages/LeftBanner/editLeftBanner';
+import AddLeftBanner from './pages/LeftBanner/addLeftBanner';
+import LeftBanner from './pages/LeftBanner';
 
 const MyContext = createContext();
 
@@ -180,6 +183,11 @@ function App() {
               <Route path="/homeBanner/add" exact={true} element={<AddHomeBanner />} />
               <Route path="/homeBanner/edit/:id" exact={true} element={<EditHomeBanner />} />
               <Route path="/homeBanner" exact={true} element={<HomeBanner />} />
+              <Route path="/leftBanner" exact={true} element={<LeftBanner />} />
+              <Route path="/leftBanner/edit/:id" exact={true} element={<EditLeftBanner />} />
+              <Route path="/leftBanner/add" exact={true} element={<AddLeftBanner />} />
+
+
               <Route path="/userList" exact={true} element={<UserList />} />
               <Route path="/warehouse" exact={true} element={<Warehouse />} />
 

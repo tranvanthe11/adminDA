@@ -149,18 +149,33 @@ const Sidebar = () => {
                     <li>
                         <Button className={`w-100 ${activeTab===6 && isToggleSubmenu===true ? 'active' : ''}`}
                         onClick={()=>isOpenSubmenu(6)}>
-                            <span className='icon'><MdWarehouse  /></span>
-                            Quản lý kho
+                            <span className='icon'><PiFlagBannerFill /></span>
+                            Banner bên trái
                             <span className='arrow'><FaAngleRight /></span>
                         </Button>
                         <div className={`submenuWrapper ${activeTab===6 && isToggleSubmenu===true ? 'colapse' : 'colapsed'}`}>
                             <ul className='submenu'>
                                 <li>
+                                    <Link to="/leftBanner">Danh sách Banner</Link>
+                                </li>
+                                <li>
+                                    <Link to="/leftBanner/add">Thêm Banner</Link>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <Button className={`w-100 ${activeTab===7 && isToggleSubmenu===true ? 'active' : ''}`}
+                        onClick={()=>isOpenSubmenu(7)}>
+                            <span className='icon'><MdWarehouse  /></span>
+                            Quản lý kho
+                            <span className='arrow'><FaAngleRight /></span>
+                        </Button>
+                        <div className={`submenuWrapper ${activeTab===7 && isToggleSubmenu===true ? 'colapse' : 'colapsed'}`}>
+                            <ul className='submenu'>
+                                <li>
                                     <Link to="/warehouse">Tồn kho</Link>
                                 </li>
-                                {/* <li>
-                                    <Link to="/homeBanner/add">Thêm Banner</Link>
-                                </li> */}
                             </ul>
                         </div>
                     </li>

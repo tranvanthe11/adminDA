@@ -4,7 +4,7 @@ import Chip from '@mui/material/Chip';
 import HomeIcon from '@mui/icons-material/Home';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { emphasize, styled } from '@mui/material/styles';
-import { editData, fetchDataFromApi } from '../../utils/api';
+import { editData, fetchDataFromApi, postDataUser } from '../../utils/api';
 import Dialog from '@mui/material/Dialog';
 import { IoClose } from "react-icons/io5";
 import Button from '@mui/material/Button';
@@ -41,8 +41,11 @@ const Warehouse = () => {
 
     const [products, setProducts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isClearStockModalOpen, setIsClearStockModalOpen] = useState(false);
     const [selectedSizeColor, setSelectedSizeColor] = useState(null);
     const [quantity, setQuantity] = useState('');
+    const [promotionQuantity, setPromotionQuantity] = useState('');
+    const [promotionDiscount, setPromotionDiscount] = useState('');
 
     const [sortByStock, setSortByStock] = useState('');
     const [sortByDate, setSortByDate] = useState('');
@@ -97,6 +100,37 @@ const Warehouse = () => {
         }
     };
 
+    const handleApplyPromotion = async () => {
+        const { size, color, product } = selectedSizeColor;
+    
+        const response = await postDataUser(`/api/products/promote/${product._id}`, {
+            size: size,
+            color: color,
+            promotionDiscount: promotionDiscount,
+            promotionQuantity: promotionQuantity,
+        });
+    
+        if (response.success) {
+            context.setAlertBox({
+                open: true,
+                msg: `Khuyến mãi đã được áp dụng cho ${size} - ${color} thành công!`,
+                error: false,
+            });
+            fetchDataFromApi('/api/products').then((res) => {
+                setProducts(res?.products);
+            });
+            setIsClearStockModalOpen(false);
+            setPromotionQuantity('');
+            setPromotionDiscount('')
+        } else {
+            context.setAlertBox({
+                open: true,
+                msg: `Lỗi: ${response.message}`,
+                error: true,
+            });
+        }
+    };
+
     const getSortedProducts = () => {
         let allSizesAndColors = [];
     
@@ -130,6 +164,7 @@ const Warehouse = () => {
                     : new Date(b.dateStockIn) - new Date(a.dateStockIn)
             );
         }
+        console.log(allSizesAndColors)
         return allSizesAndColors;
     };
 
@@ -255,7 +290,11 @@ const Warehouse = () => {
                                                 </td>
                                                 <td>{item.size}</td>
                                                 <td>{item.color}</td>
-                                                <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.product.price)}</td>
+                                                <td>
+                                                {item.isPromotion
+                                                ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.pricePromotion)
+                                                : new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.product.price)}
+                                                </td>
                                                 <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.product.costPrice)}</td>
                                                 <td>{item.countInStock}</td>
                                                 <td>
@@ -277,6 +316,12 @@ const Warehouse = () => {
                                                 >
                                                     Nhập kho
                                                 </Button>
+                                                <Button className='btn-blue pl-3 pr-3 ml-3'
+                                                onClick={() => {
+                                                    setSelectedSizeColor({ ...item, product: item.product });
+                                                    setIsClearStockModalOpen(true)
+                                                }}
+                                                >Khuyến mãi</Button>
                                                 </td>
                                             </tr>
                                         // ))
@@ -294,6 +339,7 @@ const Warehouse = () => {
         <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} className='productModal'>
             <Button className="close_" onClick={()=>setIsModalOpen(false)}><IoClose /></Button>
             <h4 className='mb-1 font-weight-bold mb-3'>Nhập kho cho sản phẩm</h4>
+            <p>Bạn có chắc chắn muốn nhập kho cho size <b>{selectedSizeColor?.size}</b> và màu <b>{selectedSizeColor?.color}</b>?</p>
                     <div className="form-group">
                         <TextField
                             label="Số lượng"
@@ -306,6 +352,37 @@ const Warehouse = () => {
                     <Button className='btn-blue pl-3 pr-3 w-100' onClick={handleStockIn}>
                         Xác nhận
                     </Button>
+            </Dialog>
+
+            <Dialog open={isClearStockModalOpen} onClose={() => setIsClearStockModalOpen(false)} className="productModal">
+                <Button className="close_" onClick={() => setIsClearStockModalOpen(false)}>
+                    <IoClose />
+                </Button>
+                <h4 className="mb-1 font-weight-bold mb-3">Xác nhận áp dụng khuyến mãi</h4>
+                <p>Bạn có chắc chắn muốn áp dụng khuyến mãi cho size <b>{selectedSizeColor?.size}</b> và màu <b>{selectedSizeColor?.color}</b>?</p>
+                    <div className="form-group">
+                        <TextField
+                            label="Giảm giá (%)"
+                            type="number"
+                            value={promotionDiscount}
+                            onChange={(e) => setPromotionDiscount(e.target.value)}
+                            fullWidth
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <TextField
+                            label="Số lượng khuyến mãi"
+                            type="number"
+                            value={promotionQuantity}
+                            onChange={(e) => setPromotionQuantity(e.target.value)}
+                            fullWidth
+                        />
+                    </div>
+
+                <Button className="btn-blue pl-3 pr-3 w-100" onClick={handleApplyPromotion}>
+                    Xác nhận
+                </Button>
             </Dialog>
         </>
     )
