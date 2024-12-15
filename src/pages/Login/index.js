@@ -71,24 +71,24 @@ const Login = () => {
         postDataUser("/api/user/signin", formfields).then((res)=>{
             try{
                 if(res.status!==false){
-                    if (!res.user?.isAdmin) {
-                        context.setAlertBox({
-                            open: true,
-                            msg: "Bạn không có quyền truy cập. Chỉ admin được phép đăng nhập.",
-                            error: true,
-                        });
-                        setIsLoading(false);
-                        return;
-                    }
-                    if (!res.user?.isBlock) {
-                        context.setAlertBox({
-                            open: true,
-                            msg: "Tài khoản của bạn đã bị khóa",
-                            error: true,
-                        });
-                        setIsLoading(false);
-                        return;
-                    }
+                    // if (!res.user?.isAdmin) {
+                    //     context.setAlertBox({
+                    //         open: true,
+                    //         msg: "Bạn không có quyền truy cập. Chỉ admin được phép đăng nhập.",
+                    //         error: true,
+                    //     });
+                    //     setIsLoading(false);
+                    //     return;
+                    // }
+                    // if (!res.user?.isBlock) {
+                    //     context.setAlertBox({
+                    //         open: true,
+                    //         msg: "Tài khoản của bạn đã bị khóa",
+                    //         error: true,
+                    //     });
+                    //     setIsLoading(false);
+                    //     return;
+                    // }
 
                     localStorage.setItem("token", res.token);
         
