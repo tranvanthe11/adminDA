@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const fetchDataFromApi=async(url)=>{
     try{
-        const {data} = await axios.get("http://localhost:4000"+url)
+        const {data} = await axios.get(`${process.env.REACT_APP_BASE_URL}`+url)
         return data;
     }catch(error){
         console.log(error);
@@ -13,7 +13,7 @@ export const fetchDataFromApi=async(url)=>{
 
 export const postDataUser = async (url, formData) => {
     try {
-        const response = await fetch("http://localhost:4000"+url, {
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}`+url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -34,13 +34,13 @@ export const postDataUser = async (url, formData) => {
     }
 }
 export const postData = async (url, formData) => {
-    const {res} = await axios.post("http://localhost:4000"+url, formData)
+    const {res} = await axios.post(`${process.env.REACT_APP_BASE_URL}`+url, formData)
     return res;
 }
 
 export const postDataImg = async (url, formData) => {
     try {
-        const response = await axios.post("http://localhost:4000" + url, formData);
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}` + url, formData);
         
         return response.data; 
     } catch (error) {
@@ -50,11 +50,11 @@ export const postDataImg = async (url, formData) => {
 }
 
 export const editData = async (url, updatedData) => {
-    const response = await axios.put(`http://localhost:4000${url}`, updatedData);
+    const response = await axios.put(`${process.env.REACT_APP_BASE_URL}${url}`, updatedData);
     return response.data; 
 };
 
 export const deleteData = async (url) => {
-    const {res} = await axios.delete(`http://localhost:4000${url}`)
+    const {res} = await axios.delete(`${process.env.REACT_APP_BASE_URL}${url}`)
     return res;
 }

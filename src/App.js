@@ -50,7 +50,7 @@ function App() {
     email:"",
     userId:""
   })
-  const [baseUrl, setBaseUrl] = useState("http://localhost:4000");
+  const [baseUrl, setBaseUrl] = useState(`${process.env.REACT_APP_BASE_URL}`);
   const [alertBox, setAlertBox] = useState({
     msg:'',
     error: false,
